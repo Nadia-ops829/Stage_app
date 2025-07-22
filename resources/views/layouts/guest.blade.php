@@ -11,20 +11,53 @@
         <link rel="preconnect" href="https://fonts.bunny.net">
         <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
+        <!-- Bootstrap CSS -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+        <!-- Custom CSS pour couleurs sobres -->
+        <style>
+            body {
+                background-color: #f5f5dc !important; /* beige */
+                color: #111 !important;
+            }
+            .bg-white, .bg-light {
+                background-color: #fff !important;
+            }
+            .bg-dark, .dark\:bg-gray-900, .dark\:bg-gray-800 {
+                background-color: #111 !important;
+            }
+            .btn-primary, .btn-primary:focus, .btn-primary:active {
+                background-color: #111 !important;
+                border-color: #111 !important;
+                color: #f5f5dc !important;
+            }
+            .btn-primary:hover {
+                background-color: #222 !important;
+                color: #fff !important;
+            }
+            .form-control, input, select, textarea {
+                background-color: #fff !important;
+                color: #111 !important;
+                border-radius: 0.5rem;
+            }
+            label, .text-gray-600, .dark\:text-gray-400 {
+                color: #222 !important;
+            }
+        </style>
+
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans text-gray-900 antialiased">
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100 dark:bg-gray-900">
-            <div>
-                <a href="/">
-                    <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-                </a>
-            </div>
-
-            <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white dark:bg-gray-800 shadow-md overflow-hidden sm:rounded-lg">
-                {{ $slot }}
+        <div class="min-vh-100 d-flex flex-column justify-content-center align-items-center" style="background-color: #f5f5dc;">
+            <!-- Logo supprimé -->
+            <div class="w-100" style="max-width: 420px; margin-top: 2rem;">
+                <div class="p-4 bg-white shadow rounded-3">
+                    {{ $slot }}
+                </div>
             </div>
         </div>
+        <!-- Bootstrap JS -->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     </body>
 </html>

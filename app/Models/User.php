@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
@@ -18,9 +19,16 @@ class User extends Authenticatable
      * @var list<string>
      */
     protected $fillable = [
-        'name',
+        'nom',
+        'prenom',
         'email',
+        'role',
         'password',
+        'telephone',
+        'niveau',
+        'specialite',
+        'adresse',
+        'domaine',
     ];
 
     /**
@@ -45,4 +53,29 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    
+    
+    public function isAdmin()
+    {
+        return $this->role === 'admin';
+    }
+
+
+    public function isEtudiant()
+    {
+        return $this->role === 'etudiant';
+    }
+
+    public function isEntreprise()
+    {
+        return $this->role === 'entreprise';
+    }
+
+
+    public function isSuperAdmin()
+    {
+        return $this->role === 'super_admin';
+    }
+   
 }
