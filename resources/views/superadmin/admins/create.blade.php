@@ -36,7 +36,34 @@
             <label for="password_confirmation" class="form-label">Confirmer mot de passe</label>
             <input type="password" name="password_confirmation" class="form-control" required>
         </div>
-        <button type="submit" class="btn btn-primary">Créer l'administrateur</button>
+        <div class="mb-3">
+            <label for="role" class="form-label">Rôle</label>
+            <select name="role" id="role-select" class="form-control" required onchange="toggleEntrepriseFields()">
+                <option value="admin">Administrateur</option>
+                <option value="entreprise">Entreprise</option>
+            </select>
+        </div>
+        <div id="entreprise-fields" style="display:none;">
+            <div class="mb-3">
+                <label for="domaine" class="form-label">Domaine</label>
+                <input type="text" name="domaine" class="form-control">
+            </div>
+            <div class="mb-3">
+                <label for="adresse" class="form-label">Adresse</label>
+                <input type="text" name="adresse" class="form-control">
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Créer l'utilisateur</button>
     </form>
+    <script>
+        function toggleEntrepriseFields() {
+            var role = document.getElementById('role-select').value;
+            var entrepriseFields = document.getElementById('entreprise-fields');
+            entrepriseFields.style.display = (role === 'entreprise') ? 'block' : 'none';
+        }
+        document.addEventListener('DOMContentLoaded', function() {
+            toggleEntrepriseFields();
+        });
+    </script>
 </div>
 @endsection

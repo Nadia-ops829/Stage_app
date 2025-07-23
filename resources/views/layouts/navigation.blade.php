@@ -15,6 +15,14 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Dashboard') }}
                     </x-nav-link>
+                    @if(Auth::user() && Auth::user()->role === 'superadmin')
+                        <x-nav-link :href="route('superadmin.admins.index')" :active="request()->routeIs('superadmin.admins.*')">
+                            Gestion utilisateurs
+                        </x-nav-link>
+                        <x-nav-link :href="route('superadmin.admins.etudiants')" :active="request()->routeIs('superadmin.admins.etudiants')">
+                            Liste étudiants
+                        </x-nav-link>
+                    @endif
                 </div>
             </div>
 
@@ -70,6 +78,14 @@
             <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                 {{ __('Dashboard') }}
             </x-responsive-nav-link>
+            @if(Auth::user() && Auth::user()->role === 'superadmin')
+                <x-responsive-nav-link :href="route('superadmin.admins.index')" :active="request()->routeIs('superadmin.admins.*')">
+                    Gestion utilisateurs
+                </x-responsive-nav-link>
+                <x-responsive-nav-link :href="route('superadmin.admins.etudiants')" :active="request()->routeIs('superadmin.admins.etudiants')">
+                    Liste étudiants
+                </x-responsive-nav-link>
+            @endif
         </div>
 
         <!-- Responsive Settings Options -->

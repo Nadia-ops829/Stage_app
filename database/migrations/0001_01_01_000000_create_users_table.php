@@ -19,7 +19,7 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('telephone')->nullable();
             $table->string('password'); 
-            $table->enum('role', ['admin', 'etudiant', 'entreprise'])->default('etudiant');
+            $table->enum('role', ['admin', 'etudiant', 'entreprise', 'superadmin'])->default('etudiant');
             $table->string('spécialité')->nullable();
             $table->string('niveau')->nullable();
             $table->string('adresse')->nullable();

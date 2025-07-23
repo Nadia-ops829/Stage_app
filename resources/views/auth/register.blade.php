@@ -47,7 +47,7 @@
                 </div>
             @endif
 
-            <form methode="POST" action="{{ route('register.store') }}" >
+            <form method="POST" action="{{ route('register.store') }}" >
                 @csrf
                 <div class="mb-3">
                     <label for="nom" class="form-label">Nom</label>

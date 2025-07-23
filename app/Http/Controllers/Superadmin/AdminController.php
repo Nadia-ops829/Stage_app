@@ -32,16 +32,32 @@ class AdminController extends Controller
             'prenom' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
             'password' => 'required|confirmed|min:6',
+            'role' => 'required|in:admin,entreprise',
+            'domaine' => 'required_if:role,entreprise',
+            'adresse' => 'required_if:role,entreprise',
         ]);
 
-        User::create([
+        $data = [
             'nom' => $request->nom,
             'prenom' => $request->prenom,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'admin',
-        ]);
+            'role' => $request->role,
+        ];
 
-        return redirect()->route('superadmin.admins.index')->with('success', 'Administrateur créé avec succès.');
+        if ($request->role === 'entreprise') {
+            $data['domaine'] = $request->domaine;
+            $data['adresse'] = $request->adresse;
+        }
+
+        User::create($data);
+
+        return redirect()->route('superadmin.admins.index')->with('success', 'Utilisateur créé avec succès.');
+    }
+
+    public function etudiants()
+    {
+        $etudiants = \App\Models\User::where('role', 'etudiant')->get();
+        return view('superadmin.admins.etudiants', compact('etudiants'));
     }
 }
