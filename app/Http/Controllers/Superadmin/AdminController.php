@@ -16,12 +16,13 @@ class AdminController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth', 'role:superadmin']);
+        $this->middleware(['auth', 'role:super_admin']);
     }
 
     public function index()
     {
         $admins = User::where('role', 'admin')->get();
+        // dd($admins);
         return view('superadmin.admins.index', compact('admins'));
     }
 
@@ -56,6 +57,7 @@ class AdminController extends Controller
         }
 
         User::create($data);
+        // dd($data);
 
         return redirect()->route('superadmin.admins.index')->with('success', 'Utilisateur créé avec succès.');
     }
@@ -81,9 +83,17 @@ public function dashboard()
     ));
 }
 
-    public function etudiants()
-    {
-        $etudiants = \App\Models\User::where('role', 'etudiant')->get();
-        return view('superadmin.admins.etudiants', compact('etudiants'));
-    }
+    // public function etudiants()
+    // {
+    //     $etudiants = \App\Models\User::where('role', 'etudiant')->get();
+    //     return view('superadmin.admins.etudiants', compact('etudiants'));
+    // }
+
+    // public function entreprises()
+    // {
+    //     $entreprises = \App\Models\User::where('role', 'entreprise')->get();
+    //     return view('superadmin.admins.entreprises', compact('entreprises'));
+    // }
+
+    // public function stages()
 }

@@ -14,6 +14,11 @@ class RoleMiddleware
             return redirect()->route('login');
         }
 
+        // Gestion spéciale pour super_admin
+        if ($role === 'super_admin' && Auth::user()->role === 'super_admin') {
+            return $next($request);
+        }
+
         if (Auth::user()->role !== $role) {
             abort(403, 'Accès refusé – Rôle insuffisant.');
         }

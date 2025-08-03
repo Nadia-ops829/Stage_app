@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 
-@section('title', 'Créer une Entreprise')
+@section('title', 'Modifier une Entreprise')
 
 @section('content')
 <div class="container-fluid py-4">
@@ -8,14 +8,14 @@
         <div class="col-lg-8">
             <!-- Header Card -->
             <div class="card shadow-sm border-0 mb-4">
-                <div class="card-header bg-primary text-white">
+                <div class="card-header bg-warning text-dark">
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h4 class="mb-0">
-                                <i class="fas fa-building me-2"></i>
-                                Créer une nouvelle entreprise
+                                <i class="fas fa-edit me-2"></i>
+                                Modifier l'entreprise
                             </h4>
-                            <small>Ajoutez une nouvelle entreprise partenaire à votre plateforme</small>
+                            <small>Modifiez les informations de {{ $entreprise->nom }}</small>
                         </div>
                         <a href="{{ route('admin.entreprises.index') }}" class="btn btn-light btn-sm">
                             <i class="fas fa-arrow-left me-1"></i>
@@ -43,8 +43,9 @@
                         </div>
                     @endif
 
-                    <form action="{{ route('admin.entreprises.store') }}" method="POST">
+                    <form action="{{ route('admin.entreprises.update', $entreprise->id) }}" method="POST">
                         @csrf
+                        @method('PUT')
                         
                         <div class="row">
                             <!-- Nom de l'entreprise -->
@@ -57,7 +58,7 @@
                                        class="form-control @error('nom') is-invalid @enderror" 
                                        id="nom" 
                                        name="nom" 
-                                       value="{{ old('nom') }}" 
+                                       value="{{ old('nom', $entreprise->nom) }}" 
                                        placeholder="Ex: Microsoft France"
                                        required>
                                 @error('nom')
@@ -75,7 +76,7 @@
                                        class="form-control @error('email') is-invalid @enderror" 
                                        id="email" 
                                        name="email" 
-                                       value="{{ old('email') }}" 
+                                       value="{{ old('email', $entreprise->email) }}" 
                                        placeholder="contact@entreprise.com"
                                        required>
                                 @error('email')
@@ -93,7 +94,7 @@
                                        class="form-control @error('domaine') is-invalid @enderror" 
                                        id="domaine" 
                                        name="domaine" 
-                                       value="{{ old('domaine') }}" 
+                                       value="{{ old('domaine', $entreprise->domaine) }}" 
                                        placeholder="Ex: Technologies, Finance, Santé..."
                                        required>
                                 @error('domaine')
@@ -111,7 +112,7 @@
                                        class="form-control @error('adresse') is-invalid @enderror" 
                                        id="adresse" 
                                        name="adresse" 
-                                       value="{{ old('adresse') }}" 
+                                       value="{{ old('adresse', $entreprise->adresse) }}" 
                                        placeholder="123 Rue de la Paix, 75001 Paris"
                                        required>
                                 @error('adresse')
@@ -119,19 +120,18 @@
                                 @enderror
                             </div>
 
-                            <!-- Mot de passe -->
+                            <!-- Nouveau mot de passe (optionnel) -->
                             <div class="col-md-6 mb-3">
                                 <label for="password" class="form-label">
                                     <i class="fas fa-lock me-1"></i>
-                                    Mot de passe <span class="text-danger">*</span>
+                                    Nouveau mot de passe <small class="text-muted">(optionnel)</small>
                                 </label>
                                 <div class="input-group">
                                     <input type="password" 
                                            class="form-control @error('password') is-invalid @enderror" 
                                            id="password" 
                                            name="password" 
-                                           placeholder="Mot de passe sécurisé"
-                                           required>
+                                           placeholder="Laissez vide pour conserver l'actuel">
                                     <button class="btn btn-outline-secondary" type="button" id="togglePassword">
                                         <i class="fas fa-eye"></i>
                                     </button>
@@ -141,7 +141,7 @@
                                 @enderror
                                 <small class="form-text text-muted">
                                     <i class="fas fa-info-circle me-1"></i>
-                                    Le mot de passe doit contenir au moins 6 caractères
+                                    Laissez vide pour conserver le mot de passe actuel
                                 </small>
                             </div>
 
@@ -149,15 +149,14 @@
                             <div class="col-md-6 mb-3">
                                 <label for="password_confirmation" class="form-label">
                                     <i class="fas fa-lock me-1"></i>
-                                    Confirmer le mot de passe <span class="text-danger">*</span>
+                                    Confirmer le nouveau mot de passe
                                 </label>
                                 <div class="input-group">
                                     <input type="password" 
                                            class="form-control @error('password_confirmation') is-invalid @enderror" 
                                            id="password_confirmation" 
                                            name="password_confirmation" 
-                                           placeholder="Confirmez le mot de passe"
-                                           required>
+                                           placeholder="Confirmez le nouveau mot de passe">
                                     <button class="btn btn-outline-secondary" type="button" id="togglePasswordConfirmation">
                                         <i class="fas fa-eye"></i>
                                     </button>
@@ -175,38 +174,39 @@
                                 <i class="fas fa-times me-1"></i>
                                 Annuler
                             </a>
-                            <button type="submit" class="btn btn-success">
+                            <button type="submit" class="btn btn-warning">
                                 <i class="fas fa-save me-1"></i>
-                                Créer l'entreprise
+                                Mettre à jour
                             </button>
                         </div>
                     </form>
                 </div>
             </div>
 
-            <!-- Info Card -->
-            <div class="card border-info mt-4">
-                <div class="card-header bg-info text-white">
+            <!-- Current Info Card -->
+            <div class="card border-primary mt-4">
+                <div class="card-header bg-primary text-white">
                     <h6 class="mb-0">
                         <i class="fas fa-info-circle me-2"></i>
-                        Informations importantes
+                        Informations actuelles
                     </h6>
                 </div>
                 <div class="card-body">
-                    <ul class="list-unstyled mb-0">
-                        <li class="mb-2">
-                            <i class="fas fa-check-circle text-success me-2"></i>
-                            L'entreprise recevra un email de confirmation avec ses identifiants
-                        </li>
-                        <li class="mb-2">
-                            <i class="fas fa-check-circle text-success me-2"></i>
-                            L'entreprise pourra se connecter immédiatement après la création
-                        </li>
-                        <li>
-                            <i class="fas fa-check-circle text-success me-2"></i>
-                            Vous pourrez modifier les informations à tout moment depuis la liste
-                        </li>
-                    </ul>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p class="mb-1"><strong>Nom :</strong> {{ $entreprise->nom }}</p>
+                            <p class="mb-1"><strong>Email :</strong> {{ $entreprise->email }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="mb-1"><strong>Domaine :</strong> {{ $entreprise->domaine ?? 'Non renseigné' }}</p>
+                            <p class="mb-1"><strong>Adresse :</strong> {{ $entreprise->adresse ?? 'Non renseigné' }}</p>
+                        </div>
+                    </div>
+                    <hr>
+                    <p class="mb-0 text-muted">
+                        <i class="fas fa-calendar me-1"></i>
+                        Créée le {{ $entreprise->created_at->format('d/m/Y à H:i') }}
+                    </p>
                 </div>
             </div>
         </div>
@@ -245,4 +245,4 @@ document.getElementById('togglePasswordConfirmation').addEventListener('click', 
     }
 });
 </script>
-@endsection
+@endsection 
