@@ -6,6 +6,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Etudiant;
+use App\Models\Entreprise;
+use App\Models\Stage;
+use App\Models\Candidature;
+use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
@@ -54,6 +59,27 @@ class AdminController extends Controller
 
         return redirect()->route('superadmin.admins.index')->with('success', 'Utilisateur créé avec succès.');
     }
+
+
+    
+public function dashboard()
+{
+    $nbEtudiants = Etudiant::count();
+    $nbEntreprises = Entreprise::count();
+    $nbStages = Stage::count();
+    $nbCandidatures = Candidature::count();
+    $derniersEtudiants = Etudiant::latest()->take(5)->get();
+    $dernieresCandidatures = Candidature::latest()->take(5)->get();
+
+    return view('dashboard_admin', compact(
+        'nbEtudiants',
+        'nbEntreprises',
+        'nbStages',
+        'nbCandidatures',
+        'derniersEtudiants',
+        'dernieresCandidatures'
+    ));
+}
 
     public function etudiants()
     {
