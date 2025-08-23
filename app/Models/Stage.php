@@ -35,13 +35,13 @@ class Stage extends Model
     // Relation avec l'entreprise
     public function entreprise()
     {
-        return $this->belongsTo(User::class, 'entreprise_id');
+        return $this->belongsTo(Entreprise::class, 'entreprise_id');
     }
 
     // Relation avec les candidatures
     public function candidatures()
     {
-        return $this->hasMany(Candidature::class);
+        return $this->hasMany(Candidature::class, 'stage_id');
     }
 
     // Scope pour les stages actifs
@@ -50,15 +50,15 @@ class Stage extends Model
         return $query->where('statut', 'active');
     }
 
-    // Méthode pour vérifier si le stage est complet
+    // Vérifier si le stage est complet
     public function isComplet()
     {
         return $this->candidatures()->count() >= $this->nombre_places;
     }
 
-    // Méthode pour obtenir le nombre de places restantes
+    // Nombre de places restantes
     public function getPlacesRestantes()
     {
         return max(0, $this->nombre_places - $this->candidatures()->count());
     }
-} 
+}

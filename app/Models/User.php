@@ -77,5 +77,11 @@ class User extends Authenticatable
     {
         return $this->role === 'super_admin';
     }
+
+    public function entreprise()
+    {
+        return $this->belongsTo(Entreprise::class);
+    }
+
    
 }

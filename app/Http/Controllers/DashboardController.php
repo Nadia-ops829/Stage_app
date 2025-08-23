@@ -6,12 +6,29 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Entreprise;
+use App\Models\Candidature;
 
 class DashboardController extends Controller
 {
     public function index()
     {
         $user = Auth::user();
+
+        $entreprise = Auth::user()->entreprise;
+
+        $candidatures = Candidature::get();
+
+        /* if ($entreprise) {
+            $candidatures = $entreprise->candidatures()
+                ->with(['etudiant', 'stage'])
+                ->latest()
+                ->get();
+        } else {
+            $candidatures = collect(); // collection vide
+        } */
+
+        //dd($candidatures);
+
 
         switch ($user->role) {
             case 'admin':
@@ -20,7 +37,7 @@ class DashboardController extends Controller
                 // dd($user);
                 return $this->dashboard_superadmin();
             case 'entreprise':
-                return view('dashboard_entreprise');
+                return view('dashboard_entreprise', compact('candidatures'));
             default:
                 // Dashboard étudiant avec données réalistes
                 return $this->dashboardEtudiant();

@@ -34,7 +34,7 @@ class Candidature extends Model
     // Relation avec le stage
     public function stage()
     {
-        return $this->belongsTo(Stage::class);
+        return $this->belongsTo(Stage::class, 'stage_id');
     }
 
     // Scope pour les candidatures en attente
@@ -43,13 +43,11 @@ class Candidature extends Model
         return $query->where('statut', 'en_attente');
     }
 
-    // Scope pour les candidatures acceptées
     public function scopeAcceptees($query)
     {
         return $query->where('statut', 'acceptee');
     }
 
-    // Scope pour les candidatures refusées
     public function scopeRefusees($query)
     {
         return $query->where('statut', 'refusee');

@@ -27,15 +27,10 @@ return new class extends Migration
             $table->rememberToken();
             $table->timestamps();
         });
-            
-            
-            
-            
-            
-            
 
         Schema::create('password_reset_tokens', function (Blueprint $table) {
-            $table->string('email')->primary();
+            $table->id();
+            $table->string('email', 191)->index(); // indexé, plus de problème de clé longue
             $table->string('token');
             $table->timestamp('created_at')->nullable();
         });

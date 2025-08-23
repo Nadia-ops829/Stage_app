@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use App\Models\Entreprise;
 
 class EntrepriseController extends Controller
 {
@@ -17,7 +18,7 @@ class EntrepriseController extends Controller
     // Liste toutes les entreprises
     public function index()
     {
-        $entreprises = User::where('role', 'entreprise')->paginate(10);
+        $entreprises = Entreprise::orderBy('created_at', 'desc')->paginate(10);
         return view('admin.entreprises.index', compact('entreprises'));
     }
 
@@ -29,26 +30,32 @@ class EntrepriseController extends Controller
 
     // Enregistre une nouvelle entreprise
     public function store(Request $request)
-    {
-        $request->validate([
-            'nom' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:6|confirmed',
-            'domaine' => 'required|string|max:255',
-            'adresse' => 'required|string|max:255',
-        ]);
+        {
+            // Validation des champs
+            $validated = $request->validate([
+                'nom' => 'required|string|max:255',
+                'email' => 'required|email|unique:entreprises,email',
+                'domaine' => 'required|string|max:255',
+                'adresse' => 'required|string|max:255',
+                'mot_de_passe' => 'required|string|min:8',
+            ]);
 
-        User::create([
-            'nom' => $request->nom,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => 'entreprise',
-            'domaine' => $request->domaine,
-            'adresse' => $request->adresse,
-        ]);
+            try {
+                // Hash du mot de passe avant sauvegarde
+                $validated['mot_de_passe'] = bcrypt($validated['mot_de_passe']);
 
-        return redirect()->route('admin.entreprises.index')->with('success', 'Entreprise créée avec succès.');
-    }
+                // Création de l'entreprise
+                Entreprise::create($validated);
+
+                // Redirection avec message de succès pour SweetAlert
+                return redirect()->back()->with('success', 'Entreprise créée avec succès !');
+
+            } catch (\Exception $e) {
+                // Redirection avec message d'erreur pour SweetAlert
+                return redirect()->back()->with('error', 'Erreur lors de la création de l’entreprise : ' . $e->getMessage());
+            }
+        }
+
 
     // Affiche une entreprise (optionnel)
     public function show($id)

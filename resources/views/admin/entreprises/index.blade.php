@@ -2,6 +2,9 @@
 
 @section('title', 'Gestion des Entreprises')
 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
 @section('content')
 <div class="container-fluid py-4">
     <!-- Header Section -->
@@ -17,11 +20,11 @@
                 </div>
                 <div class="mt-3 mt-md-0">
                     <div class="btn-group" role="group">
-                        <a href="{{ route('admin.entreprises.create') }}" 
-                           class="btn btn-success">
+                        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createEntrepriseModal">
                             <i class="fas fa-plus me-1"></i>
                             Ajouter une entreprise
-                        </a>
+                        </button>
+
                         <a href="{{ route('admin.dashboard') }}" 
                            class="btn btn-primary">
                             <i class="fas fa-arrow-left me-1"></i>
@@ -32,6 +35,64 @@
             </div>
         </div>
     </div>
+
+
+    <!-- Modal Création Entreprise -->
+    <div class="modal fade" id="createEntrepriseModal" tabindex="-1" aria-labelledby="createEntrepriseLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="modal-content border-0 shadow">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="createEntrepriseLabel">
+                <i class="fas fa-building me-2"></i> Nouvelle Entreprise
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Fermer"></button>
+            </div>
+            
+                <form action="{{ route('admin.entreprises.store') }}" method="POST">
+                    @csrf
+                    <div class="modal-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Nom de l'entreprise</label>
+                                <input type="text" name="nom" class="form-control" required>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label class="form-label">Email</label>
+                                <input type="email" name="email" class="form-control" required>
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label class="form-label">Téléphone</label>
+                                <input type="text" name="telephone" class="form-control">
+                            </div>
+                            
+                            <div class="col-md-6">
+                                <label class="form-label">Mot de passe</label>
+                                <input type="password" name="mot_de_passe" class="form-control" required>
+                            </div>
+                            
+                            <div class="col-md-12">
+                                <label class="form-label">Adresse</label>
+                                <textarea name="adresse" class="form-control" rows="2"></textarea>
+                            </div>
+                            
+                            <div class="col-md-12">
+                                <label class="form-label">Domaine</label>
+                                <input type="text" name="domaine" class="form-control">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                        <button type="submit" class="btn btn-primary">Enregistrer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
 
     <!-- Stats Cards -->
     <div class="row mb-4">
@@ -212,5 +273,30 @@
     background: linear-gradient(45deg, #007bff, #6610f2);
 }
 </style>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            @if(session('success'))
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Succès',
+                    text: '{{ session('success') }}',
+                    timer: 3000,
+                    showConfirmButton: false
+                });
+            @endif
+
+            @if(session('error'))
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Erreur',
+                    text: '{{ session('error') }}',
+                    timer: 5000,
+                    showConfirmButton: true
+                });
+            @endif
+        });
+    </script>
+
 @endsection
 

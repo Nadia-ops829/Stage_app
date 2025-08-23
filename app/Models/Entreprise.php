@@ -15,29 +15,34 @@ class Entreprise extends Model
         'adresse',
         'domaine',
         'telephone',
+        'mot_de_passe', // ✅ nouveau champ
+
     ];
 
-    public function users()
+    public function setMotDePasseAttribute($value)
     {
-        return $this->belongsTo(User::class);
+        $this->attributes['mot_de_passe'] = bcrypt($value);
     }
 
-    public function etudiants()
-    {
-        return $this->hasMany(Etudiant::class);
-    }
 
-    public function offres()
-    {
-        return $this->hasMany(Offre::class);
-    }
-
+    // Une entreprise possède plusieurs stages
     public function stages()
     {
-        return $this->hasMany(Stage::class);
+        return $this->hasMany(Stage::class, 'entreprise_id');
     }
 
-   
+    // Une entreprise reçoit plusieurs candidatures via ses stages
+    public function candidatures()
+    {
+        return $this->hasManyThrough(
+            Candidature::class,  // Le modèle final
+            Stage::class,        // Le modèle intermédiaire
+            'entreprise_id',     // Clé étrangère sur la table stages
+            'stage_id',          // Clé étrangère sur la table candidatures
+            'id',                // Clé locale sur la table entreprises
+            'id'                 // Clé locale sur la table stages
+        );
+    }
 
 
 }

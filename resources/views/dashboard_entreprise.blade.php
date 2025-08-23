@@ -122,153 +122,103 @@
 
     <!-- Main Content Row -->
     <div class="row">
-        <!-- Recent Applications -->
-        <div class="col-lg-8 mb-4">
-            <div class="card border-0 shadow-sm">
-                <div class="card-header bg-white">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h5 class="mb-0">
-                            <i class="fas fa-list me-2"></i>
-                            Dernières candidatures reçues
-                        </h5>
-                        <a href="#" class="btn btn-sm btn-outline-primary">
-                            Voir tout
-                        </a>
-                    </div>
+    <!-- Recent Applications -->
+    <div class="col-lg-8 mb-4">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white">
+                <div class="d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <i class="fas fa-list me-2"></i>
+                        Dernières candidatures reçues
+                    </h5>
                 </div>
-                <div class="card-body p-0">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead class="table-light">
-                                <tr>
-                                    <th class="border-0">Candidat</th>
-                                    <th class="border-0">Poste</th>
-                                    <th class="border-0">Statut</th>
-                                    <th class="border-0">Date</th>
-                                    <th class="border-0 text-end">Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="border-0">Candidat</th>
+                                <th class="border-0">Poste</th>
+                                <th class="border-0">Statut</th>
+                                <th class="border-0">Date</th>
+                                <th class="border-0 text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse($candidatures as $candidature)
                                 <tr>
                                     <td>
                                         <div class="d-flex align-items-center">
                                             <div class="flex-shrink-0">
+                                                @php
+                                                    $initials = strtoupper(substr($candidature->etudiant->nom, 0, 1) . substr($candidature->etudiant->prenom, 0, 1));
+                                                @endphp
                                                 <div class="bg-gradient-info rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
-                                                    <span class="text-white fw-bold small">JD</span>
+                                                    <span class="text-white fw-bold small">{{ $initials }}</span>
                                                 </div>
                                             </div>
                                             <div class="flex-grow-1 ms-2">
-                                                <small class="fw-bold">Jean Dupont</small>
+                                                <small class="fw-bold">{{ $candidature->etudiant->nom }} {{ $candidature->etudiant->prenom }}</small>
                                                 <br>
-                                                <small class="text-muted">Master Informatique</small>
+                                                <small class="text-muted">{{ $candidature->etudiant->niveau ?? 'N/A' }}</small>
                                             </div>
                                         </div>
                                     </td>
                                     <td>
-                                        <small class="fw-bold">Développeur Full-Stack</small>
+                                        <small class="fw-bold">{{ $candidature->stage->titre }}</small>
                                     </td>
                                     <td>
-                                        <span class="badge bg-success">Acceptée</span>
+                                        @if($candidature->statut === 'acceptee')
+                                            <span class="badge bg-success">Acceptée</span>
+                                        @elseif($candidature->statut === 'refusee')
+                                            <span class="badge bg-danger">Refusée</span>
+                                        @else
+                                            <span class="badge bg-warning">En attente</span>
+                                        @endif
                                     </td>
                                     <td>
-                                        <small class="text-muted">15/01/2025</small>
+                                        <small class="text-muted">{{ $candidature->created_at->format('d/m/Y') }}</small>
                                     </td>
                                     <td class="text-end">
                                         <div class="btn-group" role="group">
-                                            <button class="btn btn-sm btn-outline-info">
+                                            <a href="{{ route('candidatures.show', $candidature) }}" class="btn btn-sm btn-outline-info">
                                                 <i class="fas fa-eye"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-success">
-                                                <i class="fas fa-check"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-danger">
-                                                <i class="fas fa-times"></i>
-                                            </button>
+                                            </a>
+                                            <!-- <form action="{{ route('candidatures.repondre', $candidature) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('PATCH')
+                                                <input type="hidden" name="statut" value="acceptee">
+                                                <button type="submit" class="btn btn-sm btn-outline-success">
+                                                    <i class="fas fa-check"></i>
+                                                </button>
+                                            </form>
+                                            <form action="{{ route('candidatures.repondre', $candidature) }}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('PATCH')
+                                                <input type="hidden" name="statut" value="refusee">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                    <i class="fas fa-times"></i>
+                                                </button>
+                                            </form> -->
                                         </div>
                                     </td>
                                 </tr>
+                            @empty
                                 <tr>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <div class="flex-shrink-0">
-                                                <div class="bg-gradient-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
-                                                    <span class="text-white fw-bold small">MS</span>
-                                                </div>
-                                            </div>
-                                            <div class="flex-grow-1 ms-2">
-                                                <small class="fw-bold">Marie Smith</small>
-                                                <br>
-                                                <small class="text-muted">Licence Data Science</small>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <small class="fw-bold">Data Analyst</small>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-warning">En attente</span>
-                                    </td>
-                                    <td>
-                                        <small class="text-muted">12/01/2025</small>
-                                    </td>
-                                    <td class="text-end">
-                                        <div class="btn-group" role="group">
-                                            <button class="btn btn-sm btn-outline-info">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-success">
-                                                <i class="fas fa-check"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-danger">
-                                                <i class="fas fa-times"></i>
-                                            </button>
-                                        </div>
+                                    <td colspan="5" class="text-center text-muted py-3">
+                                        Aucune candidature reçue pour le moment.
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td>
-                                        <div class="d-flex align-items-center">
-                                            <div class="flex-shrink-0">
-                                                <div class="bg-gradient-success rounded-circle d-flex align-items-center justify-content-center" style="width: 32px; height: 32px;">
-                                                    <span class="text-white fw-bold small">PL</span>
-                                                </div>
-                                            </div>
-                                            <div class="flex-grow-1 ms-2">
-                                                <small class="fw-bold">Pierre Laurent</small>
-                                                <br>
-                                                <small class="text-muted">Master IA</small>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <small class="fw-bold">Machine Learning Engineer</small>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-danger">Refusée</span>
-                                    </td>
-                                    <td>
-                                        <small class="text-muted">10/01/2025</small>
-                                    </td>
-                                    <td class="text-end">
-                                        <div class="btn-group" role="group">
-                                            <button class="btn btn-sm btn-outline-info">
-                                                <i class="fas fa-eye"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-success">
-                                                <i class="fas fa-check"></i>
-                                            </button>
-                                            <button class="btn btn-sm btn-outline-danger">
-                                                <i class="fas fa-times"></i>
-                                            </button>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                            @endforelse
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
+    </div>
+</div>
+
 
         <!-- Quick Actions & Profile -->
         <div class="col-lg-4 mb-4">
