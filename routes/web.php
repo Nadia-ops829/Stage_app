@@ -56,28 +56,30 @@ Route::middleware(['auth'])->group(function () {
     });
 
     // Routes pour admin
-    Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
-        // Liste des entreprises
-        Route::get('entreprises', [EntrepriseController::class, 'index'])->name('entreprises.index');
-
-        // Formulaire de création
-        Route::get('entreprises/create', [EntrepriseController::class, 'create'])->name('entreprises.create');
-
-        // Enregistrement d'une nouvelle entreprise
-        Route::post('entreprises', [EntrepriseController::class, 'store'])->name('entreprises.store');
-
-        // Formulaire d'édition
-        Route::get('entreprises/{entreprise}/edit', [EntrepriseController::class, 'edit'])->name('entreprises.edit');
-
-        // Mise à jour d'une entreprise
-        Route::put('entreprises/{entreprise}', [EntrepriseController::class, 'update'])->name('entreprises.update');
-
-        // Suppression d'une entreprise
-        Route::delete('entreprises/{entreprise}', [EntrepriseController::class, 'destroy'])->name('entreprises.destroy');
-
-        Route::get('/etudiants', [AdminController::class, 'etudiants'])->name('etudiants.index');
-        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
-    });
+Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    // Liste des stages
+    Route::get('stages', [StageController::class, 'index'])->name('stages.index');
+    // Liste des entreprises
+    Route::get('entreprises', [EntrepriseController::class, 'index'])->name('entreprises.index');
+    // Formulaire de création
+    Route::get('entreprises/create', [EntrepriseController::class, 'create'])->name('entreprises.create');
+    // Enregistrement d'une nouvelle entreprise
+    Route::post('entreprises', [EntrepriseController::class, 'store'])->name('entreprises.store');
+    // Formulaire d'édition
+    Route::get('entreprises/{entreprise}/edit', [EntrepriseController::class, 'edit'])->name('entreprises.edit');
+    // Mise à jour d'une entreprise
+    Route::put('entreprises/{entreprise}', [EntrepriseController::class, 'update'])->name('entreprises.update');
+    // Suppression d'une entreprise
+    Route::delete('entreprises/{entreprise}', [EntrepriseController::class, 'destroy'])->name('entreprises.destroy');
+    // Liste des étudiants
+    Route::get('etudiants', [AdminController::class, 'etudiants'])->name('etudiants.index');
+    // Dashboard admin
+    Route::get('dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+    // Page des rapports
+    Route::get('rapports', [AdminController::class, 'rapports'])->name('rapports.index');
+    // Statistiques
+    Route::get('statistiques', [AdminController::class, 'statistiques'])->name('statistiques');
+});
 
     // Routes pour le profil
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -86,10 +88,7 @@ Route::middleware(['auth'])->group(function () {
 });
 
 
-// Route statistiques pour admin
-Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
-    Route::get('statistiques', [AdminController::class, 'statistiques'])->name('statistiques');
-});
+// ...existing code...
 // Route pour modifier une entreprise (admin)
 Route::get('admin/entreprises/{entreprise}/edit', [EntrepriseController::class, 'edit'])->name('admin.entreprises.edit');
 

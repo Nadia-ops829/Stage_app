@@ -135,17 +135,29 @@
             <!-- Navigation Admin -->
             <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
                 <i class="fas fa-tachometer-alt me-2"></i>
-                Dashboard
+                Tableau de bord
             </a>
-            <a href="{{ route('admin.entreprises.index') }}" class="{{ request()->routeIs('admin.entreprises.*') ? 'active' : '' }}">
-                <i class="fas fa-building me-2"></i>
-                Entreprises
+            <a href="{{ route('admin.entreprises.index') }}" class="btn btn-outline-primary">
+                        <i class="fas fa-building me-1"></i>
+                        Gérer les entreprises
+                    </a>
+                    <a href="{{ route('admin.etudiants.index') }}" class="btn btn-outline-info">
+                        <i class="fas fa-user-graduate me-1"></i>
+                        Gérer les étudiants
+                    </a>
+            <a href="{{ route('stages.index') }}" class="{{ request()->routeIs('stages.index') ? 'active' : '' }}">
+                <i class="fas fa-briefcase me-2"></i>
+                Offres de stage
             </a>
-            <a href="{{ route('admin.etudiants.index') }}" class="{{ request()->routeIs('admin.etudiants.*') ? 'active' : '' }}">
-                <i class="fas fa-user-graduate me-2"></i>
-                Étudiants
+            <a href="{{ route('candidatures.index', ['stage' => $stages->first()->id ?? 1]) }}" class="{{ request()->routeIs('candidatures.index') ? 'active' : '' }}">
+                <i class="fas fa-file-alt me-2"></i>
+                Candidatures
             </a>
-            <a href="#" class="{{ request()->routeIs('admin.stats.*') ? 'active' : '' }}">
+            <a href="{{ route('admin.rapports.index') }}" class="{{ request()->routeIs('admin.rapports.index') ? 'active' : '' }}">
+                <i class="fas fa-book me-2"></i>
+                Rapports
+            </a>
+            <a href="{{ route('admin.statistiques') }}" class="{{ request()->routeIs('admin.statistiques') ? 'active' : '' }}">
                 <i class="fas fa-chart-bar me-2"></i>
                 Statistiques
             </a>

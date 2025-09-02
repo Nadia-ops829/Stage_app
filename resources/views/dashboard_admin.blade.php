@@ -24,6 +24,7 @@
                         <i class="fas fa-user-graduate me-1"></i>
                         Gérer les étudiants
                     </a>
+                    
                 </div>
             </div>
         </div>
@@ -44,8 +45,8 @@
                             <h6 class="card-title text-muted mb-1">Total Étudiants</h6>
                             <h3 class="mb-0">{{ $nbEtudiants ?? 0 }}</h3>
                             <small class="text-success">
-                                <i class="fas fa-arrow-up me-1"></i>
-                                +12% ce mois
+                                 <i class="fas fa-arrow-up me-1"></i>
+                                 +{{ $nouveauxEtudiantsMois }} ce mois
                             </small>
                         </div>
                     </div>
@@ -64,11 +65,11 @@
                         </div>
                         <div class="flex-grow-1 ms-3">
                             <h6 class="card-title text-muted mb-1">Total Entreprises</h6>
-                            <h3 class="mb-0">{{ $nbEntreprises ?? 0 }}</h3>
-                            <small class="text-success">
-                                <i class="fas fa-arrow-up me-1"></i>
-                                +8% ce mois
-                            </small>
+                                <h3 class="mb-0">{{ $tauxPlacement }}%</h3>
+                                <small class="text-info">
+                                    <i class="fas fa-check-circle me-1"></i>
+                                    {{ $qualitePlacement }}
+                                </small>
                         </div>
                     </div>
                 </div>
@@ -108,10 +109,10 @@
                         </div>
                         <div class="flex-grow-1 ms-3">
                             <h6 class="card-title text-muted mb-1">Taux de Placement</h6>
-                            <h3 class="mb-0">85%</h3>
+                            <h3 class="mb-0">{{ $tauxPlacement }}%</h3>
                             <small class="text-info">
                                 <i class="fas fa-check-circle me-1"></i>
-                                Excellent
+                                {{ $qualitePlacement }}
                             </small>
                         </div>
                     </div>

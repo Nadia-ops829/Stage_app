@@ -55,6 +55,7 @@ class User extends Authenticatable
     }
 
     
+
     
     public function isAdmin()
     {
@@ -83,5 +84,12 @@ class User extends Authenticatable
         return $this->belongsTo(Entreprise::class);
     }
 
-   
+
+    public function stages()
+    {
+        return $this->hasMany(Stage::class, 'etudiant_id'); 
+    }
+    
+
+
 }
