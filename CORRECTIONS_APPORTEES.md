@@ -158,3 +158,27 @@
 ✅ **Vues manquantes** : Toutes les vues nécessaires ont été créées
 ✅ **Base de données** : Migrations et seeders corrigés
 ✅ **Page d'accueil** : Nouvelle interface moderne créée avec tous les éléments demandés 
+
+
+
+<div class="mb-3">
+                                    <label for="lettre_motivation" class="form-label">Lettre de motivation *</label>
+                                    <textarea name="lettre_motivation" id="lettre_motivation" rows="6" class="form-control @error('lettre_motivation') is-invalid @enderror" placeholder="Expliquez pourquoi vous souhaitez ce stage..." required>{{ old('lettre_motivation') }}</textarea>
+                                    @error('lettre_motivation')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                    <small class="form-text text-muted">Minimum 100 caractères</small>
+                                </div>
+
+
+
+                                @if($candidature->lettre_motivation)
+                                <div class="row">
+                                    <div class="col-12">
+                                        <strong>Lettre de motivation :</strong>
+                                        <div class="mt-2 p-3 bg-light rounded">
+                                            <p class="mb-0">{{ $candidature->lettre_motivation }}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            @endif

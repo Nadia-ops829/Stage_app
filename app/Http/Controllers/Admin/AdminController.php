@@ -22,13 +22,17 @@ class AdminController extends Controller
     public function dashboard()
     {
         $nbEtudiants = User::where('role', 'etudiant')->count();
-        $nbEntreprises = User::where('role', 'entreprise')->count();
+        $nbEntreprises = Entreprise::count();
+        $nbStages = Stage::count();
+        $nbCandidatures = Candidature::count();
         $derniersEtudiants = User::where('role', 'etudiant')->latest()->take(5)->get();
-        $dernieresEntreprises = User::where('role', 'entreprise')->latest()->take(5)->get();
+        $dernieresEntreprises = Entreprise::latest()->take(5)->get();
 
         return view('dashboard_admin', compact(
             'nbEtudiants',
             'nbEntreprises',
+            'nbStages',
+            'nbCandidatures',
             'derniersEtudiants',
             'dernieresEntreprises'
         ));
@@ -39,4 +43,6 @@ class AdminController extends Controller
         $etudiants = User::where('role', 'etudiant')->paginate(10);
         return view('admin.etudiants.index', compact('etudiants'));
     }
+
+    
 } 

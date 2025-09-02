@@ -68,8 +68,8 @@
                                 </li>
                                 @if($stage->remuneration)
                                     <li class="mb-2">
-                                        <i class="fas fa-euro-sign text-success me-2"></i>
-                                        <strong>Rémunération :</strong> {{ $stage->remuneration }}€/mois
+                                        <i class="fas fa-fcfa-sign text-success me-2"></i>
+                                        <strong>Rémunération :</strong> {{ $stage->remuneration }}FCFA/mois
                                     </li>
                                 @endif
                             </ul>
@@ -152,14 +152,17 @@
                         @else
                             <form action="{{ route('stages.postuler', $stage) }}" method="POST" enctype="multipart/form-data">
                                 @csrf
-                                <div class="mb-3">
+                                
+
+                                 <div class="mb-3">
                                     <label for="lettre_motivation" class="form-label">Lettre de motivation *</label>
-                                    <textarea name="lettre_motivation" id="lettre_motivation" rows="6" class="form-control @error('lettre_motivation') is-invalid @enderror" placeholder="Expliquez pourquoi vous souhaitez ce stage..." required>{{ old('lettre_motivation') }}</textarea>
+                                    <input type="file" name="lettre_motivation" id="lettre_motivation" class="form-control @error('lettre_motivation') is-invalid @enderror" accept=".pdf,.doc,.docx">
                                     @error('lettre_motivation')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
-                                    <small class="form-text text-muted">Minimum 100 caractères</small>
+                                    <small class="form-text text-muted">PDF, DOC ou DOCX (max 2MB)</small>
                                 </div>
+
 
                                 <div class="mb-3">
                                     <label for="cv" class="form-label">CV (optionnel)</label>

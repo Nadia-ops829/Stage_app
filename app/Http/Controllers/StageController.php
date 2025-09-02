@@ -174,8 +174,9 @@ class StageController extends Controller
         }
 
         $request->validate([
-            'lettre_motivation' => 'required|string|min:100',
-            'cv' => 'nullable|file|mimes:pdf,doc,docx|max:2048'
+            //'lettre_motivation' => 'required|string|min:100',
+            'lettre_motivation' => 'required|file|mimes:pdf,doc,docx|max:2048',
+            'cv' => 'nullable|file|mimes:pdf,doc,docx|max:2048',
         ]);
 
         $cvPath = null;

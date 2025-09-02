@@ -42,10 +42,10 @@
                         </div>
                         <div class="flex-grow-1 ms-3">
                             <h6 class="card-title text-muted mb-1">Administrateurs</h6>
-                            <h3 class="mb-0">3</h3>
+                            <h3 class="mb-0">{{ \App\Models\User::where('role', 'admin')->count() }}</h3>
                             <small class="text-success">
                                 <i class="fas fa-arrow-up me-1"></i>
-                                +1 ce mois
+                                +{{ \App\Models\User::where('role', 'admin')->where('created_at', '>=', now()->startOfMonth())->count() }} ce mois
                             </small>
                         </div>
                     </div>
@@ -64,10 +64,10 @@
                         </div>
                         <div class="flex-grow-1 ms-3">
                             <h6 class="card-title text-muted mb-1">Total Étudiants</h6>
-                            <h3 class="mb-0">156</h3>
+                            <h3 class="mb-0">{{ $totalEtudiants }}</h3>
                             <small class="text-success">
                                 <i class="fas fa-thumbs-up me-1"></i>
-                                +23 ce mois
+                                +{{ $nouveauxEtudiantsMois }} ce mois
                             </small>
                         </div>
                     </div>
@@ -86,10 +86,10 @@
                         </div>
                         <div class="flex-grow-1 ms-3">
                             <h6 class="card-title text-muted mb-1">Total Entreprises</h6>
-                            <h3 class="mb-0">42</h3>
+                            <h3 class="mb-0">{{ $totalEntreprises }}</h3>
                             <small class="text-warning">
                                 <i class="fas fa-clock me-1"></i>
-                                +8 ce mois
+                                +{{ $nouvellesEntreprisesMois }} ce mois
                             </small>
                         </div>
                     </div>
@@ -108,10 +108,10 @@
                         </div>
                         <div class="flex-grow-1 ms-3">
                             <h6 class="card-title text-muted mb-1">Stages Actifs</h6>
-                            <h3 class="mb-0">89</h3>
+                            <h3 class="mb-0">{{ $totalStages }}</h3>
                             <small class="text-info">
                                 <i class="fas fa-chart-line me-1"></i>
-                                +15 ce mois
+                                +{{ $nouveauxStagesMois }} ce mois
                             </small>
                         </div>
                     </div>

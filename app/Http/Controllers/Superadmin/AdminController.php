@@ -66,20 +66,43 @@ class AdminController extends Controller
     
 public function dashboard()
 {
-    $nbEtudiants = Etudiant::count();
-    $nbEntreprises = Entreprise::count();
-    $nbStages = Stage::count();
-    $nbCandidatures = Candidature::count();
+    // Statistiques Entreprises
+    $totalEntreprises = Entreprise::count();
+    $nouvellesEntreprisesMois = Entreprise::where('created_at', '>=', now()->startOfMonth())->count();
+    $entreprisesActives = Entreprise::where('created_at', '>=', now()->subDays(30))->count();
+
+    // Statistiques Étudiants
+    $totalEtudiants = Etudiant::count();
+    $nouveauxEtudiantsMois = Etudiant::where('created_at', '>=', now()->startOfMonth())->count();
+    $etudiantsActifs = Etudiant::where('created_at', '>=', now()->subDays(30))->count();
+
+    // Statistiques Stages
+    $totalStages = Stage::count();
+    $nouveauxStagesMois = Stage::where('created_at', '>=', now()->startOfMonth())->count();
+
+    // Statistiques Candidatures
+    $totalCandidatures = Candidature::count();
+    $nouvellesCandidaturesMois = Candidature::where('created_at', '>=', now()->startOfMonth())->count();
+
+    // Listes pour affichage
     $derniersEtudiants = Etudiant::latest()->take(5)->get();
     $dernieresCandidatures = Candidature::latest()->take(5)->get();
+    $dernieres_entreprises = Entreprise::latest()->take(5)->get();
 
-    return view('dashboard_admin', compact(
-        'nbEtudiants',
-        'nbEntreprises',
-        'nbStages',
-        'nbCandidatures',
+    return view('dashboard_superadmin', compact(
+        'totalEntreprises',
+        'nouvellesEntreprisesMois',
+        'entreprisesActives',
+        'totalEtudiants',
+        'nouveauxEtudiantsMois',
+        'etudiantsActifs',
+        'totalStages',
+        'nouveauxStagesMois',
+        'totalCandidatures',
+        'nouvellesCandidaturesMois',
         'derniersEtudiants',
-        'dernieresCandidatures'
+        'dernieresCandidatures',
+        'dernieres_entreprises'
     ));
 }
 

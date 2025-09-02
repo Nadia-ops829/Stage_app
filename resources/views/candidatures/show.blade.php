@@ -182,17 +182,22 @@
                                 </div>
                             @endif
                             
-                            @if($candidature->lettre_motivation)
+                            
+                             @if($candidature->lettre_motivation_path)
                                 <div class="row">
                                     <div class="col-12">
-                                        <strong>Lettre de motivation :</strong>
-                                        <div class="mt-2 p-3 bg-light rounded">
-                                            <p class="mb-0">{{ $candidature->lettre_motivation }}</p>
+                                        <strong>Lettre_motivation :</strong>
+                                        <div class="mt-2">
+                                            <a href="{{ Storage::url($candidature->lettre_motivation_path) }}" class="btn btn-outline-primary btn-sm" target="_blank">
+                                                <i class="fas fa-download me-2"></i>
+                                                Télécharger la lettre de motivation
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
                             @endif
-                            
+
+
                             @if($candidature->cv_path)
                                 <div class="row">
                                     <div class="col-12">

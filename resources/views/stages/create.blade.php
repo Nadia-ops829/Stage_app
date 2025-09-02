@@ -136,7 +136,7 @@
                                        id="lieu" 
                                        name="lieu" 
                                        value="{{ old('lieu') }}" 
-                                       placeholder="Ex: Paris, Lyon, Toulouse..."
+                                       placeholder="Ex: Ouagdougou,..."
                                        required>
                                 @error('lieu')
                                     <div class="invalid-feedback">{{ $message }}</div>
@@ -164,7 +164,7 @@
                             <!-- Rémunération -->
                             <div class="col-md-6 mb-3">
                                 <label for="remuneration" class="form-label">
-                                    <i class="fas fa-euro-sign me-1"></i>
+                                    <i class="fas fa-fcfa-sign me-1"></i>
                                     Rémunération (optionnel)
                                 </label>
                                 <input type="number" 
@@ -172,7 +172,7 @@
                                        id="remuneration" 
                                        name="remuneration" 
                                        value="{{ old('remuneration') }}" 
-                                       placeholder="Montant en euros par mois"
+                                       placeholder="Montant en  FCFA par mois"
                                        min="0" 
                                        step="0.01">
                                 @error('remuneration')

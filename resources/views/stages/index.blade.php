@@ -81,7 +81,7 @@
                         <div class="d-flex justify-content-between align-items-start">
                             <div>
                                 <h5 class="card-title mb-1">{{ $stage->titre }}</h5>
-                                <p class="text-muted mb-0">{{ $stage->entreprise->nom }}</p>
+                                <p class="text-muted mb-0">{{ $stage->entreprise }}</p>
                             </div>
                             <span class="badge bg-success">Active</span>
                         </div>
@@ -124,8 +124,8 @@
                         @if($stage->remuneration)
                             <div class="mb-3">
                                 <small class="text-success">
-                                    <i class="fas fa-euro-sign me-1"></i>
-                                    {{ $stage->remuneration }}€/mois
+                                    <i class="fas fa-fcfa-sign me-1"></i>
+                                    {{ $stage->remuneration }}FCFA/mois
                                 </small>
                             </div>
                         @endif
