@@ -86,7 +86,7 @@
                         </div>
                         <div class="flex-grow-1 ms-3">
                             <h6 class="card-title text-muted mb-1">Stages Actifs</h6>
-                            <h3 class="mb-0">24</h3>
+                            <h3 class="mb-0">{{$stages->count()}}</h3>
                             <small class="text-warning">
                                 <i class="fas fa-clock me-1"></i>
                                 En cours

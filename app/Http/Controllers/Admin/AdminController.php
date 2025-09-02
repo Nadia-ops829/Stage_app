@@ -27,6 +27,7 @@ class AdminController extends Controller
         $nbCandidatures = Candidature::count();
         $derniersEtudiants = User::where('role', 'etudiant')->latest()->take(5)->get();
         $dernieresEntreprises = Entreprise::latest()->take(5)->get();
+        $stages = Stage::where('statut', 'active')->get();
 
         return view('dashboard_admin', compact(
             'nbEtudiants',
@@ -34,7 +35,8 @@ class AdminController extends Controller
             'nbStages',
             'nbCandidatures',
             'derniersEtudiants',
-            'dernieresEntreprises'
+            'dernieresEntreprises',
+            'stages',
         ));
     }
 
