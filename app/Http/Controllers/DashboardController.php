@@ -14,32 +14,39 @@ class DashboardController extends Controller
     {
         $user = Auth::user();
 
-        $entreprise = Auth::user()->entreprise;
-
-        $candidatures = Candidature::get();
-
-        /* if ($entreprise) {
-            $candidatures = $entreprise->candidatures()
-                ->with(['etudiant', 'stage'])
-                ->latest()
-                ->get();
-        } else {
-            $candidatures = collect(); // collection vide
-        } */
-
-        //dd($candidatures);
-
-
         switch ($user->role) {
             case 'admin':
                 return redirect()->route('admin.dashboard');
+                
             case 'super_admin':
-                // dd($user);
                 return $this->dashboard_superadmin();
+                
             case 'entreprise':
-                return view('dashboard_entreprise', compact('candidatures'));
+                // Récupérer l'entreprise de l'utilisateur connecté
+                $entreprise = $user->entreprise;
+                
+                // Récupérer les offres actives de l'entreprise
+                $offresActives = $entreprise->stages()
+                    ->where('statut', 'active')
+                    ->count();
+                    
+                // Récupérer les candidatures pour les offres de l'entreprise
+                $candidatures = Candidature::whereHas('stage', function($query) use ($user) {
+                    $query->where('entreprise_id', $user->id);
+                })->get();
+                
+                // Compter les candidatures par statut
+                $stats = [
+                    'offres_actives' => $offresActives,
+                    'candidatures_total' => $candidatures->count(),
+                    'candidatures_en_attente' => $candidatures->where('statut', 'en_attente')->count(),
+                    'candidatures_acceptees' => $candidatures->where('statut', 'acceptée')->count(),
+                    'candidatures_refusees' => $candidatures->where('statut', 'refusée')->count(),
+                ];
+                
+                return view('dashboard_entreprise', compact('candidatures', 'stats'));
+                
             default:
-                // Dashboard étudiant avec données réalistes
                 return $this->dashboardEtudiant();
         }
     }

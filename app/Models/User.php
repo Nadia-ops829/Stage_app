@@ -3,6 +3,7 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Entreprise;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -79,9 +80,10 @@ class User extends Authenticatable
         return $this->role === 'super_admin';
     }
 
+    // Relation avec l'entreprise (pour les utilisateurs de type entreprise)
     public function entreprise()
     {
-        return $this->belongsTo(Entreprise::class);
+        return $this->hasOne(Entreprise::class, 'user_id');
     }
 
 

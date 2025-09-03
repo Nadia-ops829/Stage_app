@@ -32,6 +32,9 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/candidatures/{candidature}', [CandidatureController::class, 'show'])->name('candidatures.show');
     Route::post('/candidatures/{candidature}/repondre', [CandidatureController::class, 'repondre'])->name('candidatures.repondre');
 
+    // Route pour voir les détails d'un stage (accessible à tous les utilisateurs connectés)
+    Route::get('/stages/{stage}', [StageController::class, 'show'])->name('stages.show');
+
     // Routes pour les entreprises (création/modification de stages)
     Route::middleware(['role:entreprise'])->group(function () {
         Route::get('/stages/create', [StageController::class, 'create'])->name('stages.create');
@@ -42,9 +45,6 @@ Route::middleware(['auth'])->group(function () {
         Route::get('/stages/{stage}/candidatures', [CandidatureController::class, 'index'])->name('candidatures.index');
         Route::get('/candidatures-recues', [CandidatureController::class, 'candidaturesRecues'])->name('candidatures.recues');
     });
-
-    // Route pour voir les détails d'un stage (doit être après les routes spécifiques)
-    Route::get('/stages/{stage}', [StageController::class, 'show'])->name('stages.show');
 
     // Routes pour superadmin
     Route::middleware(['role:super_admin'])->prefix('superadmin')->name('superadmin.')->group(function () {

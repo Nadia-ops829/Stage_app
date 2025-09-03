@@ -42,10 +42,10 @@
                         </div>
                         <div class="flex-grow-1 ms-3">
                             <h6 class="card-title text-muted mb-1">Offres Actives</h6>
-                            <h3 class="mb-0">8</h3>
-                            <small class="text-success">
-                                <i class="fas fa-arrow-up me-1"></i>
-                                +2 ce mois
+                            <h3 class="mb-0">{{ $stats['offres_actives'] ?? 0 }}</h3>
+                            <small class="text-muted">
+                                <i class="fas fa-briefcase me-1"></i>
+                                Offres publiées
                             </small>
                         </div>
                     </div>
@@ -64,10 +64,10 @@
                         </div>
                         <div class="flex-grow-1 ms-3">
                             <h6 class="card-title text-muted mb-1">Candidatures</h6>
-                            <h3 class="mb-0">24</h3>
-                            <small class="text-success">
-                                <i class="fas fa-thumbs-up me-1"></i>
-                                +5 cette semaine
+                            <h3 class="mb-0">{{ $stats['candidatures_total'] ?? 0 }}</h3>
+                            <small class="text-muted">
+                                <i class="fas fa-file-alt me-1"></i>
+                                Total des candidatures
                             </small>
                         </div>
                     </div>
@@ -85,11 +85,11 @@
                             </div>
                         </div>
                         <div class="flex-grow-1 ms-3">
-                            <h6 class="card-title text-muted mb-1">En cours</h6>
-                            <h3 class="mb-0">12</h3>
+                            <h6 class="card-title text-muted mb-1">En attente</h6>
+                            <h3 class="mb-0">{{ $stats['candidatures_en_attente'] ?? 0 }}</h3>
                             <small class="text-warning">
-                                <i class="fas fa-hourglass-half me-1"></i>
-                                En évaluation
+                                <i class="fas fa-clock me-1"></i>
+                                En attente de traitement
                             </small>
                         </div>
                     </div>
@@ -107,11 +107,11 @@
                             </div>
                         </div>
                         <div class="flex-grow-1 ms-3">
-                            <h6 class="card-title text-muted mb-1">Note moyenne</h6>
-                            <h3 class="mb-0">4.5/5</h3>
-                            <small class="text-info">
-                                <i class="fas fa-chart-line me-1"></i>
-                                Excellente
+                            <h6 class="card-title text-muted mb-1">Candidatures acceptées</h6>
+                            <h3 class="mb-0">{{ $stats['candidatures_acceptees'] ?? 0 }}</h3>
+                            <small class="text-success">
+                                <i class="fas fa-check-circle me-1"></i>
+                                Candidatures validées
                             </small>
                         </div>
                     </div>

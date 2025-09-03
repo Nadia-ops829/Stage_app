@@ -49,7 +49,7 @@
                             <div class="row">
                                 <div class="col-6">
                                     <strong>Entreprise :</strong>
-                                    <p class="text-muted">{{ $candidature->stage->entreprise->nom }}</p>
+                                    
                                 </div>
                                 <div class="col-6">
                                     <strong>Domaine :</strong>

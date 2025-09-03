@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use App\Models\Entreprise;
 
@@ -15,10 +16,13 @@ class EntrepriseController extends Controller
         $this->middleware(['auth', 'role:admin']);
     }
 
-    // Liste toutes les entreprises
+    // Liste toutes les entreprises avec leurs utilisateurs associés
     public function index()
     {
-        $entreprises = Entreprise::orderBy('created_at', 'desc')->paginate(10);
+        $entreprises = Entreprise::with('user')
+            ->orderBy('created_at', 'desc')
+            ->paginate(10);
+            
         return view('admin.entreprises.index', compact('entreprises'));
     }
 
@@ -30,80 +34,172 @@ class EntrepriseController extends Controller
 
     // Enregistre une nouvelle entreprise
     public function store(Request $request)
-        {
-            // Validation des champs
-            $validated = $request->validate([
-                'nom' => 'required|string|max:255',
-                'email' => 'required|email|unique:entreprises,email',
-                'domaine' => 'required|string|max:255',
-                'adresse' => 'required|string|max:255',
-                'mot_de_passe' => 'required|string|min:8',
+    {
+        // Validation des champs
+        $validated = $request->validate([
+            'nom' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email',
+            'domaine' => 'required|string|max:255',
+            'adresse' => 'required|string|max:255',
+            'mot_de_passe' => 'required|string|min:8',
+            'telephone' => 'nullable|string|max:20',
+        ]);
+
+        // Démarrer une transaction pour assurer l'intégrité des données
+        DB::beginTransaction();
+
+        try {
+            // 1. Créer le compte utilisateur
+            $user = User::create([
+                'nom' => $validated['nom'],
+                'prenom' => '', // Champ requis
+                'email' => $validated['email'],
+                'password' => bcrypt($validated['mot_de_passe']),
+                'role' => 'entreprise',
+                'adresse' => $validated['adresse'],
+                'domaine' => $validated['domaine'],
+                'telephone' => $validated['telephone'] ?? null,
             ]);
 
-            try {
-                // Hash du mot de passe avant sauvegarde
-                $validated['mot_de_passe'] = bcrypt($validated['mot_de_passe']);
+            // 2. Créer l'entreprise liée à l'utilisateur
+            $entreprise = Entreprise::create([
+                'nom' => $validated['nom'],
+                'user_id' => $user->id,
+                'description' => null,
+                'logo' => null,
+                'site_web' => null
+            ]);
+            
+            // Valider la transaction
+            DB::commit();
 
-                // Création de l'entreprise
-                Entreprise::create($validated);
+            // Redirection avec message de succès
+            return redirect()->route('admin.entreprises.index')
+                ->with('success', 'Entreprise créée avec succès ! L\'entreprise peut maintenant se connecter avec son email et mot de passe.');
 
-                // Redirection avec message de succès pour SweetAlert
-                return redirect()->back()->with('success', 'Entreprise créée avec succès !');
-
-            } catch (\Exception $e) {
-                // Redirection avec message d'erreur pour SweetAlert
-                return redirect()->back()->with('error', 'Erreur lors de la création de l’entreprise : ' . $e->getMessage());
-            }
+        } catch (\Exception $e) {
+            // En cas d'erreur, annuler la transaction
+            DB::rollBack();
+            
+            // Journaliser l'erreur pour le débogage
+            \Log::error('Erreur création entreprise : ' . $e->getMessage());
+            \Log::error($e->getTraceAsString());
+            
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Erreur lors de la création de l\'entreprise. Veuillez réessayer.');
         }
+    }
 
 
-    // Affiche une entreprise (optionnel)
+    // Affiche les détails d'une entreprise
     public function show($id)
     {
-        $entreprise = User::where('role', 'entreprise')->findOrFail($id);
+        $entreprise = Entreprise::with('user')->findOrFail($id);
+        
+        if (!$entreprise->user) {
+            return redirect()->route('admin.entreprises.index')
+                ->with('error', 'Aucun utilisateur associé à cette entreprise.');
+        }
+        
         return view('admin.entreprises.show', compact('entreprise'));
     }
 
     // Formulaire édition entreprise
     public function edit($id)
     {
-        $entreprise = User::where('role', 'entreprise')->findOrFail($id);
+        $entreprise = Entreprise::with('user')->findOrFail($id);
+        
+        if (!$entreprise->user) {
+            return redirect()->route('admin.entreprises.index')
+                ->with('error', 'Aucun utilisateur associé à cette entreprise.');
+        }
+        
         return view('admin.entreprises.edit', compact('entreprise'));
     }
 
     // Mise à jour entreprise
     public function update(Request $request, $id)
     {
-        $entreprise = User::where('role', 'entreprise')->findOrFail($id);
-
-        $request->validate([
+        $entreprise = Entreprise::with('user')->findOrFail($id);
+        
+        $validated = $request->validate([
             'nom' => 'required|string|max:255',
-            'email' => "required|email|unique:users,email,$id",
+            'email' => 'required|email|unique:users,email,' . $entreprise->user_id,
             'domaine' => 'required|string|max:255',
             'adresse' => 'required|string|max:255',
-            'password' => 'nullable|string|min:6|confirmed',
+            'telephone' => 'nullable|string|max:20',
+            'mot_de_passe' => 'nullable|string|min:8',
         ]);
 
-        $entreprise->nom = $request->nom;
-        $entreprise->email = $request->email;
-        $entreprise->domaine = $request->domaine;
-        $entreprise->adresse = $request->adresse;
+        // Démarrer une transaction
+        DB::beginTransaction();
 
-        if ($request->filled('password')) {
-            $entreprise->password = Hash::make($request->password);
+        try {
+            // Mettre à jour l'utilisateur associé
+            $userData = [
+                'nom' => $validated['nom'],
+                'email' => $validated['email'],
+                'adresse' => $validated['adresse'],
+                'domaine' => $validated['domaine'],
+                'telephone' => $validated['telephone'] ?? null,
+            ];
+
+            if ($request->filled('mot_de_passe')) {
+                $userData['password'] = bcrypt($validated['mot_de_passe']);
+            }
+
+            $entreprise->user->update($userData);
+
+            // Mettre à jour l'entreprise
+            $entreprise->update([
+                'nom' => $validated['nom'],
+                'description' => $request->input('description'),
+                'site_web' => $request->input('site_web'),
+            ]);
+
+            DB::commit();
+
+            return redirect()->route('admin.entreprises.index')
+                ->with('success', 'Entreprise mise à jour avec succès !');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error('Erreur lors de la mise à jour de l\'entreprise : ' . $e->getMessage());
+            
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Erreur lors de la mise à jour de l\'entreprise. Veuillez réessayer.');
         }
-
-        $entreprise->save();
-
-        return redirect()->route('admin.entreprises.index')->with('success', 'Entreprise mise à jour avec succès.');
     }
 
-    // Supprime une entreprise
+    // Supprime une entreprise et son utilisateur associé
     public function destroy($id)
     {
-        $entreprise = User::where('role', 'entreprise')->findOrFail($id);
-        $entreprise->delete();
-
-        return redirect()->route('admin.entreprises.index')->with('success', 'Entreprise supprimée avec succès.');
+        $entreprise = Entreprise::with('user')->findOrFail($id);
+        
+        DB::beginTransaction();
+        
+        try {
+            // Supprimer l'utilisateur associé s'il existe
+            if ($entreprise->user) {
+                $entreprise->user->delete();
+            }
+            
+            // Supprimer l'entreprise
+            $entreprise->delete();
+            
+            DB::commit();
+            
+            return redirect()->route('admin.entreprises.index')
+                ->with('success', 'Entreprise supprimée avec succès !');
+                
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::error('Erreur lors de la suppression de l\'entreprise : ' . $e->getMessage());
+            
+            return redirect()->back()
+                ->with('error', 'Erreur lors de la suppression de l\'entreprise. Veuillez réessayer.');
+        }
     }
 }

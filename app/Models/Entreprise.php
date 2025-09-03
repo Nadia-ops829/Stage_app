@@ -10,13 +10,13 @@ class Entreprise extends Model
     use HasFactory;
 
     protected $fillable = [
+        'user_id',
         'nom',
         'email',
         'adresse',
         'domaine',
         'telephone',
-        'mot_de_passe', // ✅ nouveau champ
-
+        'mot_de_passe',
     ];
 
     public function setMotDePasseAttribute($value)
@@ -24,6 +24,12 @@ class Entreprise extends Model
         $this->attributes['mot_de_passe'] = bcrypt($value);
     }
 
+
+    // Une entreprise possède un utilisateur propriétaire
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 
     // Une entreprise possède plusieurs stages
     public function stages()

@@ -13,7 +13,14 @@
                         <i class="fas fa-briefcase me-2"></i>
                         {{ $stage->titre }}
                     </h1>
-                    <p class="text-muted mb-0">{{ $stage->entreprise->nom }} • {{ $stage->lieu }}</p>
+                    <p class="text-muted mb-0">
+                        @if($stage->entreprise)
+                            {{ $stage->entreprise->user->nom ?? $stage->entreprise->nom ?? 'Entreprise' }}
+                        @else
+                            Entreprise non spécifiée
+                        @endif
+                        • {{ $stage->lieu }}
+                    </p>
                 </div>
                 <div class="d-flex gap-2">
                     <a href="{{ route('stages.index') }}" class="btn btn-outline-secondary">
@@ -115,21 +122,39 @@
                     </h5>
                 </div>
                 <div class="card-body text-center">
-                    <div class="mb-3">
-                        <div class="bg-gradient-primary rounded-circle d-flex align-items-center justify-content-center mx-auto" style="width: 80px; height: 80px;">
-                            <span class="text-white fw-bold fs-4">{{ strtoupper(substr($stage->entreprise->nom, 0, 2)) }}</span>
+                    @if($stage->entreprise)
+                        <div class="mb-3">
+                            @php
+                                $nomEntreprise = $stage->entreprise->user->nom ?? $stage->entreprise->nom ?? 'Entreprise';
+                                $initials = '';
+                                $nameParts = explode(' ', $nomEntreprise);
+                                foreach ($nameParts as $part) {
+                                    $initials .= strtoupper(substr($part, 0, 1));
+                                    if (strlen($initials) >= 2) break;
+                                }
+                            @endphp
+                            <div class="bg-gradient-primary rounded-circle d-flex align-items-center justify-content-center mx-auto" style="width: 80px; height: 80px;">
+                                <span class="text-white fw-bold fs-4">{{ $initials }}</span>
+                            </div>
                         </div>
-                    </div>
-                    <h6 class="mb-1">{{ $stage->entreprise->nom }}</h6>
-                    <p class="text-muted mb-2">{{ $stage->entreprise->email }}</p>
-                    @if($stage->entreprise->domaine)
-                        <span class="badge bg-primary">{{ $stage->entreprise->domaine }}</span>
-                    @endif
-                    @if($stage->entreprise->adresse)
-                        <p class="text-muted small mt-2 mb-0">
-                            <i class="fas fa-map-marker-alt me-1"></i>
-                            {{ $stage->entreprise->adresse }}
-                        </p>
+                        <h6 class="mb-1">{{ $nomEntreprise }}</h6>
+                        @if($stage->entreprise->user)
+                            <p class="mb-1"><i class="fas fa-envelope me-2"></i> {{ $stage->entreprise->user->email ?? 'Non spécifié' }}</p>
+                            <p class="mb-1"><i class="fas fa-phone me-2"></i> {{ $stage->entreprise->user->telephone ?? 'Non spécifié' }}</p>
+                            <p class="mb-0"><i class="fas fa-map-marker-alt me-2"></i> {{ $stage->entreprise->user->adresse ?? 'Non spécifiée' }}</p>
+                        @else
+                            <p class="mb-1"><i class="fas fa-envelope me-2"></i> {{ $stage->entreprise->email ?? 'Non spécifié' }}</p>
+                            <p class="mb-1"><i class="fas fa-phone me-2"></i> {{ $stage->entreprise->telephone ?? 'Non spécifié' }}</p>
+                            <p class="mb-0"><i class="fas fa-map-marker-alt me-2"></i> {{ $stage->entreprise->adresse ?? 'Non spécifiée' }}</p>
+                        @endif
+                        @if($stage->entreprise->domaine)
+                            <span class="badge bg-primary mt-2">{{ $stage->entreprise->domaine }}</span>
+                        @endif
+                    @else
+                        <div class="alert alert-warning">
+                            <i class="fas fa-exclamation-triangle me-2"></i>
+                            Les informations de l'entreprise ne sont pas disponibles
+                        </div>
                     @endif
                 </div>
             </div>

@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 class LoginRequest extends FormRequest
 {
@@ -41,14 +43,30 @@ class LoginRequest extends FormRequest
     {
         $this->ensureIsNotRateLimited();
 
-        if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
-            RateLimiter::hit($this->throttleKey());
+        $credentials = $this->only('email', 'password');
+        $remember = $this->boolean('remember');
 
+        // Vérifier d'abord si l'utilisateur existe et a le bon rôle
+        $user = User::where('email', $credentials['email'])->first();
+
+        if (!$user || !Hash::check($credentials['password'], $user->password)) {
+            RateLimiter::hit($this->throttleKey());
             throw ValidationException::withMessages([
                 'email' => trans('auth.failed'),
             ]);
         }
 
+        // Vérifier si l'utilisateur a un rôle autorisé
+        $allowedRoles = ['entreprise', 'admin', 'super_admin', 'etudiant'];
+        if (!in_array($user->role, $allowedRoles)) {
+            RateLimiter::hit($this->throttleKey());
+            throw ValidationException::withMessages([
+                'email' => 'Vous n\'êtes pas autorisé à vous connecter ici.',
+            ]);
+        }
+
+        // Authentifier l'utilisateur
+        Auth::login($user, $remember);
         RateLimiter::clear($this->throttleKey());
     }
 

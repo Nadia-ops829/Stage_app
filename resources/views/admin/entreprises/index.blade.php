@@ -176,8 +176,8 @@
                         <thead class="table-light">
                             <tr>
                                 <th class="border-0">Entreprise</th>
-                                <th class="border-0">Contact</th>
-                                <th class="border-0">Domaine</th>
+                                <th class="border-0">Email</th>
+                                <th class="border-0">Téléphone</th>
                                 <th class="border-0">Date d'ajout</th>
                                 <th class="border-0 text-end">Actions</th>
                             </tr>
@@ -199,27 +199,36 @@
                                         </div>
                                     </td>
                                     <td>
-                                        <div>
-                                            <div class="d-flex align-items-center mb-1">
-                                                <i class="fas fa-envelope text-muted me-2"></i>
-                                                <small>{{ $entreprise->email }}</small>
-                                            </div>
-                                            @if($entreprise->adresse)
-                                                <div class="d-flex align-items-center">
-                                                    <i class="fas fa-map-marker-alt text-muted me-2"></i>
-                                                    <small class="text-muted">{{ Str::limit($entreprise->adresse, 30) }}</small>
-                                                </div>
-                                            @endif
+                                        @if($entreprise->user)
+                                            <span class="d-block">{{ $entreprise->user->email }}</span>
+                                            <small class="text-muted">{{ $entreprise->user->telephone ?? 'Non renseigné' }}</small>
+                                        @else
+                                            <span class="text-muted">Aucun utilisateur associé</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if($entreprise->user)
+                                            {{ $entreprise->user->domaine ?? 'Non renseigné' }}
+                                        @else
+                                            <span class="text-muted">-</span>
+                                        @endif
+                                    </td>
+                                    <td>
+                                        {{ $entreprise->created_at->format('d/m/Y') }}
+                                    </td>
+                                    <td>
+                                        <div class="d-flex justify-content-end">
+                                            <a href="#" class="btn btn-sm btn-outline-primary me-2" data-bs-toggle="modal" data-bs-target="#editEntrepriseModal{{ $entreprise->id }}">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <form action="{{ route('admin.entreprises.destroy', $entreprise) }}" method="POST" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette entreprise ?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-outline-danger">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
                                         </div>
-                                    </td>
-                                    <td>
-                                        <span class="badge bg-info">{{ $entreprise->domaine ?? 'Non renseigné' }}</span>
-                                    </td>
-                                    <td>
-                                        <small class="text-muted">
-                                            <i class="fas fa-calendar me-1"></i>
-                                            {{ $entreprise->created_at->format('d/m/Y') }}
-                                        </small>
                                     </td>
                                     <td class="text-end">
                                         <div class="btn-group" role="group">

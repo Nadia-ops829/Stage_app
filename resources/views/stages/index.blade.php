@@ -81,7 +81,7 @@
                         <div class="d-flex justify-content-between align-items-start">
                             <div>
                                 <h5 class="card-title mb-1">{{ $stage->titre }}</h5>
-                                <p class="text-muted mb-0">{{ $stage->entreprise }}</p>
+                                <p class="text-muted mb-0">{{ $stage->entreprise->nom ?? 'Entreprise non spécifiée' }}</p>
                             </div>
                             <span class="badge bg-success">Active</span>
                         </div>

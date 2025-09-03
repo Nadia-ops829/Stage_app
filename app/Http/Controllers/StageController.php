@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Stage;
 use App\Models\Candidature;
+use App\Models\Entreprise;
 use Illuminate\Support\Facades\Auth;
 
 class StageController extends Controller
@@ -15,14 +16,34 @@ class StageController extends Controller
     }
 
     /**
-     * Afficher la liste des stages (pour les étudiants)
+     * Afficher la liste des stages (pour les étudiants et les entreprises)
      */
     public function index()
     {
-        $stages = Stage::with('entreprise')
-            ->where('statut', 'active')
-            ->orderBy('created_at', 'desc')
-            ->paginate(10);
+        $query = Stage::with('entreprise')
+            ->when(Auth::user()->role === 'entreprise', function($q) {
+                // Pour les entreprises, afficher uniquement leurs propres offres
+                return $q->where('entreprise_id', Auth::id());
+            }, function($q) {
+                // Pour les autres rôles (étudiants), afficher uniquement les offres actives
+                return $q->where('statut', 'active');
+            })
+            ->orderBy('created_at', 'desc');
+
+        // Appliquer les filtres de recherche si présents
+        if (request()->has('domaine')) {
+            $query->where('domaine', request('domaine'));
+        }
+        
+        if (request()->has('lieu')) {
+            $query->where('lieu', 'like', '%' . request('lieu') . '%');
+        }
+        
+        if (request()->has('niveau')) {
+            $query->where('niveau_requis', request('niveau'));
+        }
+
+        $stages = $query->paginate(10);
 
         return view('stages.index', compact('stages'));
     }
@@ -32,7 +53,25 @@ class StageController extends Controller
      */
     public function show(Stage $stage)
     {
-        $stage->load('entreprise');
+        // Charger l'entreprise avec son utilisateur associé
+        $stage->load(['entreprise' => function($query) {
+            $query->with('user');
+        }]);
+        
+        // Vérifier si l'utilisateur est une entreprise
+        if (Auth::user()->role === 'entreprise') {
+            // Charger l'entreprise de l'utilisateur avec la relation user
+            $userEntreprise = Auth::user()->load('entreprise')->entreprise;
+            
+            if (!$userEntreprise) {
+                abort(403, 'Aucune entreprise associée à votre compte.');
+            }
+            
+            // Vérifier si l'entreprise de l'utilisateur correspond à celle du stage
+            if ($userEntreprise->id != $stage->entreprise_id) {
+                abort(403, 'Accès non autorisé à cette offre de stage');
+            }
+        }
         
         // Vérifier si l'étudiant a déjà postulé
         $aDejaPostule = false;
@@ -80,8 +119,26 @@ class StageController extends Controller
             'competences_requises' => 'nullable|array'
         ]);
 
+        // Récupérer l'utilisateur connecté
+        $user = Auth::user();
+        
+        // Vérifier si l'utilisateur a une entreprise associée
+        $entreprise = $user->entreprise;
+        
+        // Si l'entreprise n'existe pas, la créer
+        if (!$entreprise) {
+            $entreprise = Entreprise::create([
+                'user_id' => $user->id,
+                'nom' => $user->nom,
+                'email' => $user->email,
+                'adresse' => $user->adresse ?? null,
+                'domaine' => $request->domaine ?? null,
+                'telephone' => $user->telephone ?? null,
+            ]);
+        }
+
         $stage = Stage::create([
-            'entreprise_id' => Auth::id(),
+            'entreprise_id' => $entreprise->id,
             'titre' => $request->titre,
             'description' => $request->description,
             'domaine' => $request->domaine,
@@ -184,12 +241,19 @@ class StageController extends Controller
             $cvPath = $request->file('cv')->store('cvs', 'public');
         }
 
-        Candidature::create([
+        // Création de la candidature liée au stage (et donc à l'entreprise)
+        $candidature = new Candidature([
             'etudiant_id' => Auth::id(),
             'stage_id' => $stage->id,
             'lettre_motivation' => $request->lettre_motivation,
-            'cv_path' => $cvPath
+            'cv_path' => $cvPath,
+            'statut' => 'en_attente',
+            'date_candidature' => now()
         ]);
+        
+        // Sauvegarde de la candidature via la relation avec le stage
+        // Cela garantit que la candidature est bien liée au stage et donc à l'entreprise
+        $stage->candidatures()->save($candidature);
 
         return redirect()->route('stages.show', $stage)
             ->with('success', 'Candidature envoyée avec succès !');

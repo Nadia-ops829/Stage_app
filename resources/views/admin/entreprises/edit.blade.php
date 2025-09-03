@@ -76,7 +76,7 @@
                                        class="form-control @error('email') is-invalid @enderror" 
                                        id="email" 
                                        name="email" 
-                                       value="{{ old('email', $entreprise->email) }}" 
+                                       value="{{ old('email', $entreprise->user->email) }}" 
                                        placeholder="contact@entreprise.com"
                                        required>
                                 @error('email')
@@ -94,7 +94,7 @@
                                        class="form-control @error('domaine') is-invalid @enderror" 
                                        id="domaine" 
                                        name="domaine" 
-                                       value="{{ old('domaine', $entreprise->domaine) }}" 
+                                       value="{{ old('domaine', $entreprise->user->domaine) }}" 
                                        placeholder="Ex: Technologies, Finance, Santé..."
                                        required>
                                 @error('domaine')
@@ -103,24 +103,23 @@
                             </div>
 
                             <!-- Adresse -->
-                            <div class="col-md-6 mb-3">
+                            <div class="col-12 mb-3">
                                 <label for="adresse" class="form-label">
                                     <i class="fas fa-map-marker-alt me-1"></i>
-                                    Adresse <span class="text-danger">*</span>
+                                    Adresse complète <span class="text-danger">*</span>
                                 </label>
-                                <input type="text" 
-                                       class="form-control @error('adresse') is-invalid @enderror" 
-                                       id="adresse" 
-                                       name="adresse" 
-                                       value="{{ old('adresse', $entreprise->adresse) }}" 
-                                       placeholder="123 Rue de la Paix, 75001 Paris"
-                                       required>
+                                <textarea class="form-control @error('adresse') is-invalid @enderror" 
+                                          id="adresse" 
+                                          name="adresse" 
+                                          rows="2" 
+                                          placeholder="Adresse complète de l'entreprise"
+                                          required>{{ old('adresse', $entreprise->user->adresse) }}</textarea>
                                 @error('adresse')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
 
-                            <!-- Nouveau mot de passe (optionnel) -->
+                            <!-- Mot de passe -->
                             <div class="col-md-6 mb-3">
                                 <label for="password" class="form-label">
                                     <i class="fas fa-lock me-1"></i>
@@ -128,21 +127,19 @@
                                 </label>
                                 <div class="input-group">
                                     <input type="password" 
-                                           class="form-control @error('password') is-invalid @enderror" 
+                                           class="form-control @error('mot_de_passe') is-invalid @enderror" 
                                            id="password" 
-                                           name="password" 
-                                           placeholder="Laissez vide pour conserver l'actuel">
+                                           name="mot_de_passe" 
+                                           placeholder="Laisser vide pour ne pas changer"
+                                           autocomplete="new-password">
                                     <button class="btn btn-outline-secondary" type="button" id="togglePassword">
                                         <i class="fas fa-eye"></i>
                                     </button>
+                                    @error('mot_de_passe')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
-                                @error('password')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                                <small class="form-text text-muted">
-                                    <i class="fas fa-info-circle me-1"></i>
-                                    Laissez vide pour conserver le mot de passe actuel
-                                </small>
+                                <small class="form-text text-muted">Minimum 8 caractères</small>
                             </div>
 
                             <!-- Confirmation mot de passe -->
@@ -186,26 +183,31 @@
             <!-- Current Info Card -->
             <div class="card border-primary mt-4">
                 <div class="card-header bg-primary text-white">
-                    <h6 class="mb-0">
+                    <h5 class="mb-0">
                         <i class="fas fa-info-circle me-2"></i>
                         Informations actuelles
-                    </h6>
+                    </h5>
                 </div>
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <p class="mb-1"><strong>Nom :</strong> {{ $entreprise->nom }}</p>
-                            <p class="mb-1"><strong>Email :</strong> {{ $entreprise->email }}</p>
-                        </div>
-                        <div class="col-md-6">
-                            <p class="mb-1"><strong>Domaine :</strong> {{ $entreprise->domaine ?? 'Non renseigné' }}</p>
-                            <p class="mb-1"><strong>Adresse :</strong> {{ $entreprise->adresse ?? 'Non renseigné' }}</p>
-                        </div>
-                    </div>
-                    <hr>
-                    <p class="mb-0 text-muted">
-                        <i class="fas fa-calendar me-1"></i>
-                        Créée le {{ $entreprise->created_at->format('d/m/Y à H:i') }}
+                    <dl class="row mb-0">
+                        <dt class="col-sm-3">Date de création</dt>
+                        <dd class="col-sm-9">{{ $entreprise->created_at->format('d/m/Y H:i') }}</dd>
+                        
+                        <dt class="col-sm-3">Dernière mise à jour</dt>
+                        <dd class="col-sm-9">{{ $entreprise->updated_at->format('d/m/Y H:i') }}</dd>
+                        
+                        <dt class="col-sm-3">Statut</dt>
+                        <dd class="col-sm-9">
+                            <span class="badge bg-success">Active</span>
+                        </dd>
+                        
+                        @if($entreprise->user)
+                            <dt class="col-sm-3">Dernière connexion</dt>
+                            <dd class="col-sm-9">
+                                {{ $entreprise->user->last_login_at ? $entreprise->user->last_login_at->format('d/m/Y H:i') : 'Jamais connecté' }}
+                            </dd>
+                        @endif
+                    </dl>
                     </p>
                 </div>
             </div>
