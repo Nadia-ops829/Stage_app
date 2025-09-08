@@ -114,10 +114,6 @@
         <!-- Navigation selon le rôle -->
         @if(Auth::user()->role === 'super_admin')
             <!-- Navigation Super Admin -->
-            <a href="{{ route('superadmin.admins.index') }}" class="{{ request()->routeIs('superadmin.*') ? 'active' : '' }}">
-                <i class="fas fa-users-cog me-2"></i>
-                Gérer les Admins
-            </a>
             <a href="#" class="{{ request()->routeIs('superadmin.stats.*') ? 'active' : '' }}">
                 <i class="fas fa-chart-line me-2"></i>
                 Statistiques Globales

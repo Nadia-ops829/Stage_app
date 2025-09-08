@@ -10,6 +10,8 @@ use App\Models\Etudiant;
 use App\Models\Entreprise;
 use App\Models\Stage;
 use App\Models\Candidature;
+use App\Models\Rapport;
+use App\Models\Statistiques;
 use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
@@ -24,7 +26,7 @@ class AdminController extends Controller
         $admins = User::where('role', 'admin')->get();
         
         // dd($admins);
-        return view('superadmin.admins.index',  ['stages'=>$stages,'admins'=>$admins]);
+     return view('superadmin.admins.index',  ['stages'=>$stages,'admins'=>$admins]);
 
     }
 
@@ -61,7 +63,7 @@ class AdminController extends Controller
         User::create($data);
         // dd($data);
 
-        return redirect()->route('superadmin.admins.index')->with('success', 'Utilisateur créé avec succès.');
+     // return redirect()->route('superadmin.admins.index')->with('success', 'Utilisateur créé avec succès.');
     }
 
 
@@ -90,7 +92,7 @@ public function dashboard()
     $derniersEtudiants = Etudiant::latest()->take(5)->get();
     $dernieresCandidatures = Candidature::latest()->take(5)->get();
     $dernieres_entreprises = Entreprise::latest()->take(5)->get();
-
+ 
     return view('dashboard_superadmin', compact(
         'totalEntreprises',
         'nouvellesEntreprisesMois',
@@ -118,7 +120,7 @@ public function dashboard()
     // {
     //     $entreprises = \App\Models\User::where('role', 'entreprise')->get();
     //     return view('superadmin.admins.entreprises', compact('entreprises'));
-    // }
+    // 
 
     // public function stages()
 }

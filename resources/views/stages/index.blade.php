@@ -45,7 +45,7 @@
                         </div>
                         <div class="col-md-3">
                             <label for="lieu" class="form-label">Lieu</label>
-                            <input type="text" name="lieu" id="lieu" class="form-control" value="{{ request('lieu') }}" placeholder="Paris, Lyon...">
+                            <input type="text" name="lieu" id="lieu" class="form-control" value="{{ request('lieu') }}" placeholder="Ouagadougou, Bobo...">
                         </div>
                         <div class="col-md-3">
                             <label for="niveau" class="form-label">Niveau</label>

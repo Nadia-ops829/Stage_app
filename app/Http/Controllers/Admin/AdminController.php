@@ -10,10 +10,17 @@ use App\Models\Etudiant;
 use App\Models\Entreprise;
 use App\Models\Stage;
 use App\Models\Candidature;
+use App\Models\Rapport;
+use App\Models\Statistiques;
 use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
+    public function candidatures()
+    {
+        $candidatures = \App\Models\Candidature::with(['etudiant', 'stage'])->latest()->paginate(20);
+        return view('admin.candidatures', compact('candidatures'));
+    }
     public function __construct()
     {
         $this->middleware(['auth', 'role:admin']);
@@ -75,7 +82,30 @@ class AdminController extends Controller
 
      public function rapports()
     {
-        return view('admin.rapports');
+    $rapports = \App\Models\Rapport::with(['etudiant', 'stage'])->latest()->paginate(20);
+        return view('admin.rapports', compact('rapports'));
     }
     
-} 
+    // Statistiques avancées pour l'admin
+    public function statistiques()
+    {
+        // Exemple de statistiques avancées (à adapter selon besoin)
+        $nbEtudiants = User::where('role', 'etudiant')->count();
+        $nbEntreprises = Entreprise::count();
+        $nbStages = Stage::count();
+        $nbCandidatures = Candidature::count();
+        $nbRapports = Rapport::count();
+        $etudiantsPlaces = Candidature::where('statut', 'acceptee')->distinct('etudiant_id')->count('etudiant_id');
+        $tauxPlacement = $nbEtudiants > 0 ? round(($etudiantsPlaces / $nbEtudiants) * 100, 2) : 0;
+
+        return view('admin.statistiques', compact(
+            'nbEtudiants',
+            'nbEntreprises',
+            'nbStages',
+            'nbCandidatures',
+            'nbRapports',
+            'etudiantsPlaces',
+            'tauxPlacement',
+        ));
+    }
+}

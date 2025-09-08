@@ -48,15 +48,18 @@ Route::middleware(['auth'])->group(function () {
 
     // Routes pour superadmin
     Route::middleware(['role:super_admin'])->prefix('superadmin')->name('superadmin.')->group(function () {
-        // dd(auth()->user()->role('super_admin'));
-        Route::resource('admins', SuperadminAdminController::class);
-        Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard_superadmin');
-        Route::get('/admins.index', [SuperadminAdminController::class, 'index'])->name('superadmin.admins.index');
+    // dd(auth()->user()->role('super_admin'));
+    // Route::resource('admins', SuperadminAdminController::class);
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard_superadmin');
+    // Route::get('/admins.index', [SuperadminAdminController::class, 'index'])->name('superadmin.admins.index');
         
     });
 
     // Routes pour admin
 Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    // Voir toutes les candidatures (admin)
+    Route::get('candidatures', [AdminController::class, 'candidatures'])->name('candidatures.index');
+    
     // Liste des stages
     Route::get('stages', [StageController::class, 'index'])->name('stages.index');
     // Liste des entreprises

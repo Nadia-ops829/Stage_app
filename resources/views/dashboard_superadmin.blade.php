@@ -16,10 +16,10 @@
                     <p class="text-muted mb-0">Contrôle total de la plateforme de gestion de stages</p>
                 </div>
                 <div class="d-flex gap-2">
-                    <a href="{{ route('superadmin.admins.index') }}" class="btn btn-outline-primary">
+                    {{-- <a href="{{ route('superadmin.admins.index') }}" class="btn btn-outline-primary">
                         <i class="fas fa-users-cog me-1"></i>
                         Gérer les admins
-                    </a>
+                    </a> --}}
                     <a href="#" class="btn btn-outline-success">
                         <i class="fas fa-chart-line me-1"></i>
                         Statistiques globales
@@ -64,10 +64,10 @@
                         </div>
                         <div class="flex-grow-1 ms-3">
                             <h6 class="card-title text-muted mb-1">Total Étudiants</h6>
-                            <h3 class="mb-0">{{ $totalEtudiants }}</h3>
+                            <h3 class="mb-0">{{ $totalEtudiants ?? 0 }}</h3>
                             <small class="text-success">
                                 <i class="fas fa-thumbs-up me-1"></i>
-                                +{{ $nouveauxEtudiantsMois }} ce mois
+                                +{{ $nouveauxEtudiantsMois ?? 0 }} ce mois
                             </small>
                         </div>
                     </div>
@@ -86,10 +86,10 @@
                         </div>
                         <div class="flex-grow-1 ms-3">
                             <h6 class="card-title text-muted mb-1">Total Entreprises</h6>
-                            <h3 class="mb-0">{{ $totalEntreprises }}</h3>
+                            <h3 class="mb-0">{{ $totalEntreprises ?? 0 }}</h3>
                             <small class="text-warning">
                                 <i class="fas fa-clock me-1"></i>
-                                +{{ $nouvellesEntreprisesMois }} ce mois
+                                +{{ $nouvellesEntreprisesMois ?? 0 }} ce mois
                             </small>
                         </div>
                     </div>
@@ -108,10 +108,10 @@
                         </div>
                         <div class="flex-grow-1 ms-3">
                             <h6 class="card-title text-muted mb-1">Stages Actifs</h6>
-                            <h3 class="mb-0">{{ $totalStages }}</h3>
+                            <h3 class="mb-0">{{ $totalStages ?? 0 }}</h3>
                             <small class="text-info">
                                 <i class="fas fa-chart-line me-1"></i>
-                                +{{ $nouveauxStagesMois }} ce mois
+                                +{{ $nouveauxStagesMois ?? 0 }} ce mois
                             </small>
                         </div>
                     </div>
@@ -418,4 +418,4 @@
     background: linear-gradient(45deg, #ffc107, #fd7e14);
 }
 </style>
-@endsection 
+@endsection

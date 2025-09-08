@@ -375,4 +375,4 @@
     background: linear-gradient(45deg, #28a745, #20c997);
 }
 </style>
-@endsection 
+@endsection

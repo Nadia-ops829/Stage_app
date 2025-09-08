@@ -24,6 +24,10 @@
                         <i class="fas fa-user-graduate me-1"></i>
                         Gérer les étudiants
                     </a>
+                    <a href="{{ route('admin.candidatures.index') }}" class="btn btn-outline-success">
+                        <i class="fas fa-file-alt me-1"></i>
+                        Candidatures
+                    </a>
                     
                 </div>
             </div>

@@ -177,6 +177,7 @@
                             <tr>
                                 <th class="border-0">Entreprise</th>
                                 <th class="border-0">Email</th>
+                                <th class="border-0">Domaine d'activité</th>
                                 <th class="border-0">Téléphone</th>
                                 <th class="border-0">Date d'ajout</th>
                                 <th class="border-0 text-end">Actions</th>
@@ -217,18 +218,7 @@
                                         {{ $entreprise->created_at->format('d/m/Y') }}
                                     </td>
                                     <td>
-                                        <div class="d-flex justify-content-end">
-                                            <a href="#" class="btn btn-sm btn-outline-primary me-2" data-bs-toggle="modal" data-bs-target="#editEntrepriseModal{{ $entreprise->id }}">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                            <form action="{{ route('admin.entreprises.destroy', $entreprise) }}" method="POST" class="d-inline" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer cette entreprise ?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-outline-danger">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </form>
-                                        </div>
+                                        
                                     </td>
                                     <td class="text-end">
                                         <div class="btn-group" role="group">

@@ -54,78 +54,31 @@ class DashboardController extends Controller
     private function dashboardEtudiant()
     {
         $user = Auth::user();
-        
-        // Données simulées pour le dashboard étudiant
+        // Statistiques dynamiques depuis la base de données
         $stats = [
-            'candidatures' => rand(3, 8),
-            'reponses' => rand(1, 4),
-            'en_attente' => rand(1, 3),
-            'score' => number_format(rand(35, 50) / 10, 1) . '/5'
+            'candidatures' => Candidature::where('etudiant_id', $user->id)->count(),
+            'reponses' => Candidature::where('etudiant_id', $user->id)->whereNotNull('date_reponse')->count(),
+            'en_attente' =>Candidature::where('etudiant_id', $user->id)->enAttente()->count(),
+            // Score fictif basé sur le taux d'acceptation
+            'score' => (function() use ($user) {
+                $total = \App\Models\Candidature::where('etudiant_id', $user->id)->count();
+                $acceptees = \App\Models\Candidature::where('etudiant_id', $user->id)->acceptees()->count();
+                return $total > 0 ? number_format(($acceptees / $total) * 5, 1) . '/5' : '0/5';
+            })()
         ];
 
-        // Candidatures simulées
-        $candidatures = [
-            [
-                'entreprise' => 'Microsoft France',
-                'logo' => 'MS',
-                'poste' => 'Développeur Full-Stack',
-                'statut' => 'acceptée',
-                'date' => now()->subDays(rand(1, 7))->format('d/m/Y'),
-                'couleur' => 'primary'
-            ],
-            [
-                'entreprise' => 'Google',
-                'logo' => 'GO',
-                'poste' => 'Data Scientist',
-                'statut' => 'en_attente',
-                'date' => now()->subDays(rand(1, 14))->format('d/m/Y'),
-                'couleur' => 'info'
-            ],
-            [
-                'entreprise' => 'Apple',
-                'logo' => 'AP',
-                'poste' => 'iOS Developer',
-                'statut' => 'refusée',
-                'date' => now()->subDays(rand(1, 21))->format('d/m/Y'),
-                'couleur' => 'success'
-            ],
-            [
-                'entreprise' => 'Amazon',
-                'logo' => 'AM',
-                'poste' => 'DevOps Engineer',
-                'statut' => 'en_attente',
-                'date' => now()->subDays(rand(1, 10))->format('d/m/Y'),
-                'couleur' => 'warning'
-            ]
-        ];
+        // Candidatures de l'étudiant 
+        $candidatures = Candidature::with(['stage', 'stage.entreprise'])
+            ->where('etudiant_id', $user->id)
+            ->latest('date_candidature')
+            ->take(10)
+            ->get();
 
-        // Entreprises recommandées basées sur le profil de l'étudiant
-        $entreprisesRecommandees = [
-            [
-                'nom' => 'Microsoft',
-                'logo' => 'MS',
-                'domaine' => 'Technologies',
-                'couleur' => 'primary'
-            ],
-            [
-                'nom' => 'Google',
-                'logo' => 'GO',
-                'domaine' => 'Technologies',
-                'couleur' => 'info'
-            ],
-            [
-                'nom' => 'Apple',
-                'logo' => 'AP',
-                'domaine' => 'Technologies',
-                'couleur' => 'success'
-            ],
-            [
-                'nom' => 'Amazon',
-                'logo' => 'AM',
-                'domaine' => 'E-commerce',
-                'couleur' => 'warning'
-            ]
-        ];
+        // Entreprises recommandées 
+        $entreprisesRecommandees = Entreprise::withCount('stages')
+            ->orderByDesc('stages_count')
+            ->take(4)
+            ->get();
 
         return view('dashboard_etudiant', compact('stats', 'candidatures', 'entreprisesRecommandees'));
     }
