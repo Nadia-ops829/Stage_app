@@ -22,4 +22,12 @@ class Etudiant extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    // Relation avec les stages via les candidatures acceptées
+    public function stages()
+    {
+        return $this->belongsToMany(Stage::class, 'candidatures', 'etudiant_id', 'stage_id')
+            ->wherePivot('statut', 'acceptee')
+            ->withTimestamps();
+    }
 }

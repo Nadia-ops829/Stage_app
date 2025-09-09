@@ -23,7 +23,8 @@ class StageController extends Controller
         $query = Stage::with('entreprise')
             ->when(Auth::user()->role === 'entreprise', function($q) {
                 // Pour les entreprises, afficher uniquement leurs propres offres
-                return $q->where('entreprise_id', Auth::id());
+                $entrepriseId = Auth::user()->entreprise->id;
+                return $q->where('entreprise_id', $entrepriseId);
             }, function($q) {
                 // Pour les autres rôles (étudiants), afficher uniquement les offres actives
                 return $q->where('statut', 'active');
@@ -89,9 +90,9 @@ class StageController extends Controller
      */
     public function create()
     {
-        if (Auth::user()->role !== 'entreprise') {
-            abort(403, 'Accès refusé');
-        }
+        // if (Auth::user()->role !== 'entreprise') {
+        //     abort(403, 'Accès refusé');
+        // }
 
         return view('stages.create');
     }

@@ -33,18 +33,17 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/candidatures/{candidature}/repondre', [CandidatureController::class, 'repondre'])->name('candidatures.repondre');
 
     // Route pour voir les détails d'un stage (accessible à tous les utilisateurs connectés)
-    Route::get('/stages/{stage}', [StageController::class, 'show'])->name('stages.show');
+    
 
     // Routes pour les entreprises (création/modification de stages)
-    Route::middleware(['role:entreprise'])->group(function () {
         Route::get('/stages/create', [StageController::class, 'create'])->name('stages.create');
         Route::post('/stages', [StageController::class, 'store'])->name('stages.store');
+        Route::get('/stages/{stage}', [StageController::class, 'show'])->name('stages.show');
         Route::get('/stages/{stage}/edit', [StageController::class, 'edit'])->name('stages.edit');
         Route::put('/stages/{stage}', [StageController::class, 'update'])->name('stages.update');
         Route::delete('/stages/{stage}', [StageController::class, 'destroy'])->name('stages.destroy');
         Route::get('/stages/{stage}/candidatures', [CandidatureController::class, 'index'])->name('candidatures.index');
         Route::get('/candidatures-recues', [CandidatureController::class, 'candidaturesRecues'])->name('candidatures.recues');
-    });
 
     // Routes pour superadmin
     Route::middleware(['role:super_admin'])->prefix('superadmin')->name('superadmin.')->group(function () {
@@ -83,6 +82,12 @@ Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(functi
     // Statistiques
     Route::get('statistiques', [AdminController::class, 'statistiques'])->name('statistiques');
 });
+
+        // Routes pour les rapports de stage
+    Route::resource('rapports', \App\Http\Controllers\RapportController::class)->except(['show']);
+    Route::get('rapports/{rapport}', [\App\Http\Controllers\RapportController::class, 'show'])->name('rapports.show');
+    Route::post('rapports/{rapport}/valider', [\App\Http\Controllers\RapportController::class, 'valider'])->name('rapports.valider');
+    Route::get('rapports/{rapport}/telecharger', [\App\Http\Controllers\RapportController::class, 'telecharger'])->name('rapports.telecharger');
 
     // Routes pour le profil
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
