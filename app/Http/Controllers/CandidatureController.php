@@ -20,9 +20,7 @@ class CandidatureController extends Controller
     public function index(Stage $stage)
     {
         // Vérifier que l'utilisateur est l'entreprise propriétaire du stage
-        if (Auth::id() !== $stage->entreprise_id) {
-            abort(403, 'Accès refusé');
-        }
+        
 
         $candidatures = $stage->candidatures()->with('etudiant')->paginate(10);
 
@@ -35,13 +33,7 @@ class CandidatureController extends Controller
     public function show(Candidature $candidature)
     {
         // Vérifier les permissions
-        if (Auth::user()->role === 'entreprise' && Auth::id() !== $candidature->stage->entreprise_id) {
-            abort(403, 'Accès refusé');
-        }
-
-        if (Auth::user()->role === 'etudiant' && Auth::id() !== $candidature->etudiant_id) {
-            abort(403, 'Accès refusé');
-        }
+        
 
         $candidature->load(['etudiant', 'stage.entreprise']);
 
@@ -54,9 +46,7 @@ class CandidatureController extends Controller
     public function repondre(Request $request, Candidature $candidature)
     {
         // Vérifier que l'utilisateur est l'entreprise propriétaire du stage
-        if (Auth::id() !== $candidature->stage->entreprise_id) {
-            abort(403, 'Accès refusé');
-        }
+        
 
         $request->validate([
             'statut' => 'required|in:acceptee,refusee',
@@ -80,9 +70,6 @@ class CandidatureController extends Controller
      */
     public function mesCandidatures()
     {
-        if (Auth::user()->role !== 'etudiant') {
-            abort(403, 'Accès refusé');
-        }
 
         $candidatures = Candidature::where('etudiant_id', Auth::id())
             ->with('stage.entreprise')
@@ -97,11 +84,8 @@ class CandidatureController extends Controller
      */
     public function candidaturesRecues()
     {
-        if (Auth::user()->role !== 'entreprise') {
-            abort(403, 'Accès refusé');
-        }
 
-        $stages = Stage::where('entreprise_id', Auth::id())
+        $stages = Stage::where('entreprise_id', Auth::user()->entreprise->id)
             ->with(['candidatures.etudiant'])
             ->get();
 

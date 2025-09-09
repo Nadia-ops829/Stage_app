@@ -6,6 +6,7 @@ use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\Stage;
 use App\Models\User;
+use App\Models\Entreprise;
 
 class StageSeeder extends Seeder
 {
@@ -14,22 +15,34 @@ class StageSeeder extends Seeder
      */
     public function run(): void
     {
-        // Récupérer les entreprises existantes
-        $entreprises = User::where('role', 'entreprise')->get();
+        // Récupérer une entreprise existante
+        $entreprise = Entreprise::first();
 
-        if ($entreprises->isEmpty()) {
+        if (!$entreprise) {
             $this->command->info('Aucune entreprise trouvée. Création d\'une entreprise de test...');
-            $entreprise = User::create([
+            
+            // Créer d'abord l'utilisateur
+            $user = User::create([
                 'nom' => 'TechCorp',
                 'prenom' => '',
                 'email' => 'techcorp@example.com',
                 'password' => bcrypt('password'),
                 'role' => 'entreprise',
                 'domaine' => 'Technologies',
-                'adresse' => '123 Rue de la Tech, 75001 Paris'
+                'adresse' => '123 Rue de la Tech, 75001 Paris',
+                'telephone' => '0123456789'
             ]);
-        } else {
-            $entreprise = $entreprises->first();
+            
+            // Puis créer l'entreprise liée
+            $entreprise = Entreprise::create([
+                'user_id' => $user->id,
+                'nom' => 'TechCorp',
+                'email' => 'techcorp@example.com',
+                'adresse' => '123 Rue de la Tech, 75001 Paris',
+                'domaine' => 'Technologies',
+                'telephone' => '0123456789',
+                'mot_de_passe' => 'password' // Le mutateur va hacher automatiquement ce mot de passe
+            ]);
         }
 
         $stages = [

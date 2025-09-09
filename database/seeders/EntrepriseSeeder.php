@@ -27,9 +27,11 @@ class EntrepriseSeeder extends Seeder
         Entreprise::create([
             'nom' => 'EntrepriseTest',
             'user_id' => $user->id,
-            'description' => 'Une entreprise spécialisée dans le développement informatique',
-            'site_web' => 'https://www.entreprisetest.com',
-            'logo' => null,
+            'email' => 'contact@entreprise.com',
+            'adresse' => '1 rue de l\'Entreprise',
+            'domaine' => 'Informatique',
+            'telephone' => '0123456789',
+            'mot_de_passe' => 'password', // Le mutateur va hacher automatiquement ce mot de passe
         ]);
     }
 }

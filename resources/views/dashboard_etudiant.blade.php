@@ -20,9 +20,9 @@
                         <i class="fas fa-search me-1"></i>
                         Rechercher des stages
                     </a>
-                    <a href="#" class="btn btn-outline-success">
+                    <a href="{{ route('rapports.index') }}" class="btn btn-outline-success">
                         <i class="fas fa-file-alt me-1"></i>
-                        Mon CV
+                        Mes Rapports
                     </a>
                 </div>
             </div>

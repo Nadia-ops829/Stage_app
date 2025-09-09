@@ -12,9 +12,24 @@ class Rapport extends Model
     protected $fillable = [
         'etudiant_id',
         'stage_id',
-        'statut',
         'fichier',
-        // Ajoute d'autres champs si besoin
+        'commentaire_etudiant',
+        'commentaire_entreprise',
+        'statut',
+        'date_depot',
+        'date_validation'
+    ];
+
+    protected $dates = [
+        'date_depot',
+        'date_validation',
+        'created_at',
+        'updated_at'
+    ];
+
+    protected $casts = [
+        'date_depot' => 'date',
+        'date_validation' => 'date',
     ];
 
     public function etudiant()

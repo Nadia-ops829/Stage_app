@@ -31,9 +31,9 @@ class DashboardController extends Controller
                     ->count();
                     
                 // Récupérer les candidatures pour les offres de l'entreprise
-                $candidatures = Candidature::whereHas('stage', function($query) use ($user) {
-                    $query->where('entreprise_id', $user->id);
-                })->get();
+                $candidatures = Candidature::whereHas('stage', function($query) use ($entreprise) {
+                    $query->where('entreprise_id', $entreprise->id);
+                })->with(['etudiant', 'stage'])->latest()->take(5)->get();
                 
                 // Compter les candidatures par statut
                 $stats = [
@@ -42,6 +42,9 @@ class DashboardController extends Controller
                     'candidatures_en_attente' => $candidatures->where('statut', 'en_attente')->count(),
                     'candidatures_acceptees' => $candidatures->where('statut', 'acceptée')->count(),
                     'candidatures_refusees' => $candidatures->where('statut', 'refusée')->count(),
+                    'rapports' => \App\Models\Rapport::whereHas('stage', function($q) use ($entreprise) {
+                        $q->where('entreprise_id', $entreprise->id);
+                    })->count(),
                 ];
                 
                 return view('dashboard_entreprise', compact('candidatures', 'stats'));
