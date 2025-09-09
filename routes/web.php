@@ -33,25 +33,30 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/candidatures/{candidature}/repondre', [CandidatureController::class, 'repondre'])->name('candidatures.repondre');
 
     // Route pour voir les détails d'un stage (accessible à tous les utilisateurs connectés)
-    
+    Route::get('/stages/{stage}', [StageController::class, 'show'])->name('stages.show');
 
     // Routes pour les entreprises (création/modification de stages)
+    Route::middleware(['role:entreprise'])->group(function () {
         Route::get('/stages/create', [StageController::class, 'create'])->name('stages.create');
         Route::post('/stages', [StageController::class, 'store'])->name('stages.store');
-        Route::get('/stages/{stage}', [StageController::class, 'show'])->name('stages.show');
         Route::get('/stages/{stage}/edit', [StageController::class, 'edit'])->name('stages.edit');
         Route::put('/stages/{stage}', [StageController::class, 'update'])->name('stages.update');
         Route::delete('/stages/{stage}', [StageController::class, 'destroy'])->name('stages.destroy');
         Route::get('/stages/{stage}/candidatures', [CandidatureController::class, 'index'])->name('candidatures.index');
         Route::get('/candidatures-recues', [CandidatureController::class, 'candidaturesRecues'])->name('candidatures.recues');
+    });
 
     // Routes pour superadmin
     Route::middleware(['role:super_admin'])->prefix('superadmin')->name('superadmin.')->group(function () {
-    // dd(auth()->user()->role('super_admin'));
-    // Route::resource('admins', SuperadminAdminController::class);
-    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard_superadmin');
-    // Route::get('/admins.index', [SuperadminAdminController::class, 'index'])->name('superadmin.admins.index');
+        Route::get('/dashboard', [\App\Http\Controllers\Superadmin\AdminController::class, 'dashboard'])->name('dashboard');
         
+        // Admin management routes
+        Route::get('/admins', [\App\Http\Controllers\Superadmin\AdminController::class, 'index'])->name('admins.index');
+        Route::get('/admins/create', [\App\Http\Controllers\Superadmin\AdminController::class, 'create'])->name('admins.create');
+        Route::post('/admins', [\App\Http\Controllers\Superadmin\AdminController::class, 'store'])->name('admins.store');
+        Route::get('/admins/{admin}/edit', [\App\Http\Controllers\Superadmin\AdminController::class, 'edit'])->name('admins.edit');
+        Route::put('/admins/{admin}', [\App\Http\Controllers\Superadmin\AdminController::class, 'update'])->name('admins.update');
+        Route::delete('/admins/{admin}', [\App\Http\Controllers\Superadmin\AdminController::class, 'destroy'])->name('admins.destroy');
     });
 
     // Routes pour admin
