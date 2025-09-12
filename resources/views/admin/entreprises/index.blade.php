@@ -202,24 +202,27 @@
                                     <td>
                                         @if($entreprise->user)
                                             <span class="d-block">{{ $entreprise->user->email }}</span>
-                                            <small class="text-muted">{{ $entreprise->user->telephone ?? 'Non renseigné' }}</small>
+                                            
                                         @else
                                             <span class="text-muted">Aucun utilisateur associé</span>
                                         @endif
                                     </td>
                                     <td>
                                         @if($entreprise->user)
-                                            {{ $entreprise->user->domaine ?? 'Non renseigné' }}
+                                            {{ $entreprise->user->domaine ?? '-' }}
                                         @else
                                             <span class="text-muted">-</span>
                                         @endif
                                     </td>
                                     <td>
-                                        {{ $entreprise->created_at->format('d/m/Y') }}
+                                        <small class="text-muted">{{ $entreprise->user->telephone ?? 'Non renseigné' }}</small>
                                     </td>
                                     <td>
-                                        
+                                        {{ $entreprise->created_at->format('d/m/Y') }}
                                     </td>
+                                    
+                                        
+                                    
                                     <td class="text-end">
                                         <div class="btn-group" role="group">
                                             <a href="{{ route('admin.entreprises.edit', $entreprise->id) }}" 

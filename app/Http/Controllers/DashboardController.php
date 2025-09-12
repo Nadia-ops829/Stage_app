@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Entreprise;
 use App\Models\Candidature;
+use App\Models\Rapport;
 
 class DashboardController extends Controller
 {
@@ -25,29 +26,34 @@ class DashboardController extends Controller
                 // Récupérer l'entreprise de l'utilisateur connecté
                 $entreprise = $user->entreprise;
                 
-                // Récupérer les offres actives de l'entreprise
-                $offresActives = $entreprise->stages()
+                // Récupérer les offres actives de l'entreprise avec le nombre de candidatures
+                $offres = $entreprise->stages()
                     ->where('statut', 'active')
-                    ->count();
+                    ->withCount('candidatures')
+                    ->get();
                     
-                // Récupérer les candidatures pour les offres de l'entreprise
+                // 5 dernières candidatures reçues par l’entreprise
                 $candidatures = Candidature::whereHas('stage', function($query) use ($entreprise) {
                     $query->where('entreprise_id', $entreprise->id);
-                })->with(['etudiant', 'stage'])->latest()->take(5)->get();
+                })
+                ->with(['etudiant', 'stage'])
+                ->latest()
+                ->take(5)
+                ->get();
                 
                 // Compter les candidatures par statut
                 $stats = [
-                    'offres_actives' => $offresActives,
+                    'offres_actives' => $offres->count(),
                     'candidatures_total' => $candidatures->count(),
                     'candidatures_en_attente' => $candidatures->where('statut', 'en_attente')->count(),
-                    'candidatures_acceptees' => $candidatures->where('statut', 'acceptée')->count(),
-                    'candidatures_refusees' => $candidatures->where('statut', 'refusée')->count(),
-                    'rapports' => \App\Models\Rapport::whereHas('stage', function($q) use ($entreprise) {
+                    'candidatures_acceptees' => $candidatures->where('statut', 'acceptee')->count(),
+                    'candidatures_refusees' => $candidatures->where('statut', 'refusee')->count(),
+                    'rapports' => Rapport::whereHas('stage', function($q) use ($entreprise) {
                         $q->where('entreprise_id', $entreprise->id);
                     })->count(),
                 ];
                 
-                return view('dashboard_entreprise', compact('candidatures', 'stats'));
+                return view('dashboard_entreprise', compact('entreprise', 'offres', 'candidatures', 'stats'));
                 
             default:
                 return $this->dashboardEtudiant();
@@ -57,25 +63,25 @@ class DashboardController extends Controller
     private function dashboardEtudiant()
     {
         $user = Auth::user();
+
         // Statistiques dynamiques depuis la base de données
         $stats = [
             'candidatures' => Candidature::where('etudiant_id', $user->id)->count(),
             'reponses' => Candidature::where('etudiant_id', $user->id)->whereNotNull('date_reponse')->count(),
-            'en_attente' =>Candidature::where('etudiant_id', $user->id)->enAttente()->count(),
-            // Score fictif basé sur le taux d'acceptation
+            'en_attente' => Candidature::where('etudiant_id', $user->id)->enAttente()->count(),
+            // Score basé sur le taux d'acceptation
             'score' => (function() use ($user) {
-                $total = \App\Models\Candidature::where('etudiant_id', $user->id)->count();
-                $acceptees = \App\Models\Candidature::where('etudiant_id', $user->id)->acceptees()->count();
+                $total = Candidature::where('etudiant_id', $user->id)->count();
+                $acceptees = Candidature::where('etudiant_id', $user->id)->acceptees()->count();
                 return $total > 0 ? number_format(($acceptees / $total) * 5, 1) . '/5' : '0/5';
             })()
         ];
 
-        // Candidatures de l'étudiant 
+        // Candidatures de l'étudiant avec pagination
         $candidatures = Candidature::with(['stage', 'stage.entreprise'])
             ->where('etudiant_id', $user->id)
             ->latest('date_candidature')
-            ->take(10)
-            ->get();
+            ->paginate(10);
 
         // Entreprises recommandées 
         $entreprisesRecommandees = Entreprise::withCount('stages')
@@ -85,8 +91,9 @@ class DashboardController extends Controller
 
         return view('dashboard_etudiant', compact('stats', 'candidatures', 'entreprisesRecommandees'));
     }
+
     public function dashboard_superadmin()
     {
         return view('dashboard_superadmin');
     }
-} 
+}

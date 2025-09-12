@@ -31,7 +31,7 @@ class EntrepriseSeeder extends Seeder
             'adresse' => '1 rue de l\'Entreprise',
             'domaine' => 'Informatique',
             'telephone' => '0123456789',
-            'mot_de_passe' => 'password', // Le mutateur va hacher automatiquement ce mot de passe
+            'mot_de_passe' => 'password', 
         ]);
     }
 }

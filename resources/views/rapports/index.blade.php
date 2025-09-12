@@ -6,7 +6,7 @@
         <div class="col-md-12">
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <span>Rapports de Stage</span>
+                    <span>Mes Rapports de Stage</span>
                     @if(auth()->user()->etudiant)
                         <a href="{{ route('rapports.create') }}" class="btn btn-primary">
                             <i class="fas fa-plus"></i> Nouveau Rapport
@@ -25,7 +25,7 @@
                         <table class="table table-striped">
                             <thead>
                                 <tr>
-                                    <th>#</th>
+                                    <th>ID</th>
                                     @if(auth()->user()->role == 'entreprise')
                                         <th>Étudiant</th>
                                     @endif
@@ -70,7 +70,7 @@
                                                     <i class="fas fa-eye"></i>
                                                 </a>
                                                 
-                                                @role('etudiant')
+                                                
                                                     @if($rapport->statut != 'valide')
                                                         <a href="{{ route('rapports.edit', $rapport->id) }}" 
                                                            class="btn btn-sm btn-warning"
@@ -89,7 +89,7 @@
                                                             </button>
                                                         </form>
                                                     @endif
-                                                @endrole
+                                                
                                                 
                                                 <a href="{{ route('rapports.telecharger', $rapport->id) }}" 
                                                    class="btn btn-sm btn-primary"
@@ -103,13 +103,17 @@
                                     <tr>
                                         <td colspan="6" class="text-center">
                                             Aucun rapport trouvé.
-                                            @role('etudiant')
-                                                <a href="{{ route('rapports.create') }}" class="btn btn-link">
-                                                    Créer votre premier rapport
+                                           <tr> <a href="{{ route('rapports.create') }}" class="btn btn-outline-primary">
+                                                <i class="fas fa-plus me-2"></i>
+                                                    Créer votre  premier Rapport
                                                 </a>
-                                            @endrole
+                                            </tr>
+                                            
+                                            
                                         </td>
                                     </tr>
+
+
                                 @endforelse
                             </tbody>
                         </table>

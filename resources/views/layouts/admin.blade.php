@@ -99,153 +99,127 @@
 <body>
 
     <div class="sidebar">
-        <div class="logo">
-            @if(Auth::user()->role === 'super_admin')
-                👑 Super Admin
-            @elseif(Auth::user()->role === 'admin')
-                📋 Admin
-            @elseif(Auth::user()->role === 'entreprise')
-                🏢 Entreprise
-            @else
-                🎓 Étudiant
-            @endif
-        </div>
-
-        <!-- Navigation selon le rôle -->
+    <!-- Logo / Nom utilisateur -->
+    <div class="logo fw-bold text-center">
         @if(Auth::user()->role === 'super_admin')
-            <!-- Navigation Super Admin -->
-            <a href="#" class="{{ request()->routeIs('superadmin.stats.*') ? 'active' : '' }}">
-                <i class="fas fa-chart-line me-2"></i>
-                Statistiques Globales
-            </a>
-            <a href="#" class="{{ request()->routeIs('superadmin.config.*') ? 'active' : '' }}">
-                <i class="fas fa-cog me-2"></i>
-                Configuration
-            </a>
-            <a href="#" class="{{ request()->routeIs('superadmin.security.*') ? 'active' : '' }}">
-                <i class="fas fa-shield-alt me-2"></i>
-                Sécurité
-            </a>
-
+            👑 Super Admin
         @elseif(Auth::user()->role === 'admin')
-            <!-- Navigation Admin -->
-            <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
-                <i class="fas fa-tachometer-alt me-2"></i>
-                Tableau de bord
-            </a>
-            <a href="{{ route('admin.entreprises.index') }}" class="btn btn-outline-primary">
-                        <i class="fas fa-building me-1"></i>
-                        Gérer les entreprises
-                    </a>
-                    <a href="{{ route('admin.etudiants.index') }}" class="btn btn-outline-info">
-                        <i class="fas fa-user-graduate me-1"></i>
-                        Gérer les étudiants
-                    </a>
-            <a href="{{ route('stages.index') }}" class="{{ request()->routeIs('stages.index') ? 'active' : '' }}">
-                <i class="fas fa-briefcase me-2"></i>
-                Offres de stage
-            </a>
-            <a href="{{ route('candidatures.index', ['stage' => $stages->first()->id ?? 1]) }}" class="{{ request()->routeIs('candidatures.index') ? 'active' : '' }}">
-                <i class="fas fa-file-alt me-2"></i>
-                Candidatures
-            </a>
-            <a href="{{ route('admin.rapports.index') }}" class="{{ request()->routeIs('admin.rapports.index') ? 'active' : '' }}">
-                <i class="fas fa-book me-2"></i>
-                Rapports
-            </a>
-            <a href="{{ route('admin.statistiques') }}" class="{{ request()->routeIs('admin.statistiques') ? 'active' : '' }}">
-                <i class="fas fa-chart-bar me-2"></i>
-                Statistiques
-            </a>
-
-        @elseif(Auth::user()->role === 'entreprise')
-            <!-- Navigation Entreprise -->
-            <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">
-                <i class="fas fa-tachometer-alt me-2"></i>
-                Dashboard
-            </a>
-            <a href="{{ route('stages.index') }}" class="{{ request()->routeIs('stages.*') ? 'active' : '' }}">
-                <i class="fas fa-briefcase me-2"></i>
-                Mes Offres
-            </a>
-            <a href="{{ route('stages.create') }}" class="{{ request()->routeIs('stages.create') ? 'active' : '' }}">
-                <i class="fas fa-plus me-2"></i>
-                Publier une offre
-            </a>
-            <a href="{{ route('candidatures.recues') }}" class="{{ request()->routeIs('candidatures.recues') ? 'active' : '' }}">
-                <i class="fas fa-users me-2"></i>
-                Candidatures
-            </a>
-            <a href="#" class="{{ request()->routeIs('entreprise.profil.*') ? 'active' : '' }}">
-                <i class="fas fa-building me-2"></i>
-                Mon Profil
-            </a>
-
+            📋 Admin
+        @elseif(Auth::user()->role === 'entreprise' && Auth::user()->entreprise)
+            🏢 {{ Auth::user()->entreprise->nom }}
         @else
-            <!-- Navigation Étudiant -->
-            <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">
-                <i class="fas fa-tachometer-alt me-2"></i>
-                Dashboard
-            </a>
-            <a href="{{ route('stages.index') }}" class="{{ request()->routeIs('stages.*') ? 'active' : '' }}">
-                <i class="fas fa-search me-2"></i>
-                Rechercher des Stages
-            </a>
-            <a href="{{ route('candidatures.mes-candidatures') }}" class="{{ request()->routeIs('candidatures.mes-candidatures') ? 'active' : '' }}">
-                <i class="fas fa-paper-plane me-2"></i>
-                Mes Candidatures
-            </a>
-            <a href="#" class="{{ request()->routeIs('etudiant.profil.*') ? 'active' : '' }}">
-                <i class="fas fa-user me-2"></i>
-                Mon Profil
-            </a>
-            <a href="#" class="{{ request()->routeIs('etudiant.cv.*') ? 'active' : '' }}">
-                <i class="fas fa-file-alt me-2"></i>
-                Mon CV
-            </a>
+            🎓 {{ Auth::user()->nom }} {{ Auth::user()->prenom }}
         @endif
+    </div>
 
-        <!-- Section commune -->
-        <div style="margin-top: 2rem;">
-            <a href="{{ route('profile.edit') }}" class="{{ request()->routeIs('profile.*') ? 'active' : '' }}">
-                <i class="fas fa-user-cog me-2"></i>
-                Paramètres
-            </a>
-            <a href="{{ route('logout') }}"
-               onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                <i class="fas fa-sign-out-alt me-2"></i>
-                Déconnexion
-            </a>
-        </div>
+    <!-- Navigation selon le rôle -->
+    @if(Auth::user()->role === 'super_admin')
+        <a href="#" class="{{ request()->routeIs('superadmin.stats.*') ? 'active' : '' }}">
+            <i class="fas fa-chart-line me-2"></i> Statistiques Globales
+        </a>
+        <a href="#" class="{{ request()->routeIs('superadmin.config.*') ? 'active' : '' }}">
+            <i class="fas fa-cog me-2"></i> Configuration
+        </a>
+        <a href="#" class="{{ request()->routeIs('superadmin.security.*') ? 'active' : '' }}">
+            <i class="fas fa-shield-alt me-2"></i> Sécurité
+        </a>
 
-        <!-- Informations utilisateur -->
-        <div class="user-info">
-            <div class="d-flex align-items-center">
-                <div class="user-avatar">
-                    <span class="fw-bold">{{ strtoupper(substr(Auth::user()->nom, 0, 1) . substr(Auth::user()->prenom, 0, 1)) }}</span>
+    @elseif(Auth::user()->role === 'admin')
+        <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">
+            <i class="fas fa-tachometer-alt me-2"></i> Mon Tableau de bord
+        </a>
+        <a href="{{ route('admin.entreprises.index') }}" class="btn btn-outline-primary">
+            <i class="fas fa-building me-1"></i> Gérer les entreprises
+        </a>
+        <a href="{{ route('admin.etudiants.index') }}" class="btn btn-outline-info">
+            <i class="fas fa-user-graduate me-1"></i> Gérer les étudiants
+        </a>
+        <a href="{{ route('stages.index') }}" class="{{ request()->routeIs('stages.index') ? 'active' : '' }}">
+            <i class="fas fa-briefcase me-2"></i> Offres de stage
+        </a>
+        <a href="{{ route('candidatures.index') }}" class="{{ request()->routeIs('candidatures.index') ? 'active' : '' }}">
+            <i class="fas fa-file-alt me-2"></i> Candidatures
+        </a>
+        <a href="{{ route('admin.statistiques') }}" class="{{ request()->routeIs('admin.statistiques') ? 'active' : '' }}">
+            <i class="fas fa-chart-bar me-2"></i> Statistiques
+        </a>
+
+    @elseif(Auth::user()->role === 'entreprise')
+        <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">
+            <i class="fas fa-tachometer-alt me-2"></i> Mon Tableau de bord
+        </a>
+        <a href="{{ route('stages.index') }}" class="{{ request()->routeIs('stages.*') ? 'active' : '' }}">
+            <i class="fas fa-briefcase me-2"></i> Mes Offres
+        </a>
+        <a href="{{ route('stages.create') }}" class="{{ request()->routeIs('stages.create') ? 'active' : '' }}">
+            <i class="fas fa-plus me-2"></i> Publier une offre
+        </a>
+        <a href="{{ route('candidatures.recues') }}" class="{{ request()->routeIs('candidatures.recues') ? 'active' : '' }}">
+            <i class="fas fa-users me-2"></i> Candidatures
+        </a>
+
+    @else
+        <a href="{{ route('dashboard') }}" class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">
+            <i class="fas fa-tachometer-alt me-2"></i> Mon Tableau de bord
+        </a>
+        <a href="{{ route('stages.index') }}" class="{{ request()->routeIs('stages.*') ? 'active' : '' }}">
+            <i class="fas fa-search me-2"></i> Rechercher des Stages
+        </a>
+        <a href="{{ route('candidatures.mes-candidatures') }}" class="{{ request()->routeIs('candidatures.mes-candidatures') ? 'active' : '' }}">
+            <i class="fas fa-paper-plane me-2"></i> Mes Candidatures
+        </a>
+        <a href="{{ route('rapports.index') }}" class="{{ request()->routeIs('rapports.index') ? 'active' : '' }}">
+            <i class="fas fa-user me-2"></i> Mes Rapports
+        </a>
+    @endif
+
+    <!-- Section commune -->
+    <div style="margin-top: 2rem;">
+        <a href="{{ route('profile.edit') }}" class="{{ request()->routeIs('profile.*') ? 'active' : '' }}">
+            <i class="fas fa-user-cog me-2"></i> Paramètres
+        </a>
+        <a href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+            <i class="fas fa-sign-out-alt me-2"></i> Déconnexion
+        </a>
+    </div>
+
+    <!-- Informations utilisateur -->
+    <div class="user-info">
+        <div class="d-flex align-items-center">
+            <div class="user-avatar">
+                <span class="fw-bold">
+                    {{ strtoupper(substr(Auth::user()->nom, 0, 1) . substr(Auth::user()->prenom, 0, 1)) }}
+                </span>
+            </div>
+            <div>
+                <div class="fw-bold">
+                    @if(Auth::user()->role === 'entreprise' && Auth::user()->entreprise)
+                        {{ Auth::user()->entreprise->nom }}
+                    @else
+                        {{ Auth::user()->nom }} {{ Auth::user()->prenom }}
+                    @endif
                 </div>
-                <div>
-                    <div class="fw-bold">{{ Auth::user()->nom }} {{ Auth::user()->prenom }}</div>
-                    <div class="small">{{ Auth::user()->email }}</div>
-                    <div class="role-badge">
-                        @if(Auth::user()->role === 'super_admin')
-                            👑 Super Admin
-                        @elseif(Auth::user()->role === 'admin')
-                            📋 Admin
-                        @elseif(Auth::user()->role === 'entreprise')
-                            🏢 Entreprise
-                        @else
-                            🎓 Étudiant
-                        @endif
-                    </div>
+                <div class="small">{{ Auth::user()->email }}</div>
+                <div class="role-badge">
+                    @if(Auth::user()->role === 'super_admin')
+                        👑 Super Admin
+                    @elseif(Auth::user()->role === 'admin')
+                        📋 Admin
+                    @elseif(Auth::user()->role === 'entreprise')
+                        🏢 Entreprise
+                    @else
+                        🎓 Étudiant
+                    @endif
                 </div>
             </div>
         </div>
-
-        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
-            @csrf
-        </form>
     </div>
+
+    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+        @csrf
+    </form>
+</div>
+
 
     <div class="main-content">
         @yield('content')

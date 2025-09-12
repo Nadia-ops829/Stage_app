@@ -32,69 +32,128 @@
                 }
             @endphp
 
-            <!-- Statistiques -->
-            <div class="row mb-4">
-                <div class="col-md-3">
-                    <div class="card bg-primary text-white">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <h4 class="mb-0">{{ $totalCandidatures }}</h4>
-                                    <small>Total candidatures</small>
-                                </div>
-                                <div class="align-self-center">
-                                    <i class="fas fa-users fa-2x"></i>
-                                </div>
-                            </div>
-                        </div>
+           <!-- Statistiques -->
+<div class="row mb-4">
+    <div class="col-md-3">
+        <div class="card bg-primary text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="mb-0">{{ $totalCandidatures }}</h4>
+                        <small>Total candidatures</small>
                     </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card bg-warning text-white">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <h4 class="mb-0">{{ $candidaturesEnAttente }}</h4>
-                                    <small>En attente</small>
-                                </div>
-                                <div class="align-self-center">
-                                    <i class="fas fa-clock fa-2x"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card bg-success text-white">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <h4 class="mb-0">{{ $stages->count() }}</h4>
-                                    <small>Offres actives</small>
-                                </div>
-                                <div class="align-self-center">
-                                    <i class="fas fa-briefcase fa-2x"></i>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div class="card bg-info text-white">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between">
-                                <div>
-                                    <h4 class="mb-0">{{ $stages->where('statut', 'active')->count() }}</h4>
-                                    <small>Offres ouvertes</small>
-                                </div>
-                                <div class="align-self-center">
-                                    <i class="fas fa-check-circle fa-2x"></i>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-users fa-2x"></i>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card bg-warning text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="mb-0">{{ $candidaturesEnAttente }}</h4>
+                        <small>En attente</small>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-clock fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card bg-success text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="mb-0">{{ $candidaturesRefusees }}</h4>
+                        <small>Candidatures refusées</small>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-times-circle fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card bg-info text-white">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h4 class="mb-0">{{ $candidaturesAcceptees }}</h4>
+                        <small>Candidatures acceptées</small>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="fas fa-check-circle fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Statistiques -->
+<div class="row mb-4">
+    <!-- ... tes 4 cartes ici ... -->
+</div>
+
+<!-- Liste des candidatures -->
+<div class="card">
+    <div class="card-header bg-secondary text-white">
+        <h5 class="mb-0">Liste des candidatures</h5>
+    </div>
+    <div class="card-body">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Étudiant</th>
+                    <th>Stage</th>
+                    <th>Date de candidature</th>
+                    <th>Statut</th>
+                    <th>Commentaire</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($stages as $stage)
+                    @foreach($stage->candidatures as $candidature)
+                        <tr>
+                            <td>{{ $candidature->etudiant->nom }} {{ $candidature->etudiant->prenom }}</td>
+                            <td>{{ $stage->titre }}</td>
+                            <td>{{ $candidature->date_candidature->format('d/m/Y') }}</td>
+                            <td>
+                                @if($candidature->statut === 'en_attente')
+                                    <span class="badge bg-warning text-dark">En attente</span>
+                                @elseif($candidature->statut === 'acceptee')
+                                    <span class="badge bg-success">Acceptée</span>
+                                @else
+                                    <span class="badge bg-danger">Refusée</span>
+                                @endif
+                            </td>
+                            <td>{{ $candidature->commentaire_entreprise ?? '-' }}</td>
+                            <td>
+                                <a href="{{ route('candidatures.show', $candidature) }}" class="btn btn-sm btn-primary">
+                                    Voir
+                                </a>
+                            </td>
+                        </tr>
+                    @endforeach
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
 
             @if($stages->count() > 0)
                 @foreach($stages as $stage)

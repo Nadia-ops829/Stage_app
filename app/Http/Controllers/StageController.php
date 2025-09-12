@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\Stage;
 use App\Models\Candidature;
 use App\Models\Entreprise;
+use App\Models\User;
+use App\Notifications\JobofferNotifications;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Auth;
 
 class StageController extends Controller
@@ -53,37 +56,44 @@ class StageController extends Controller
      * Afficher les détails d'un stage
      */
     public function show(Stage $stage)
-    {
-        // Charger l'entreprise avec son utilisateur associé
-        $stage->load(['entreprise' => function($query) {
-            $query->with('user');
-        }]);
+{
+    // Charger l'entreprise avec son utilisateur associé
+    $stage->load(['entreprise' => function($query) {
+        $query->with('user');
+    }]);
+    
+    // Vérifier si l'utilisateur est une entreprise
+    if (Auth::user()->role === 'entreprise') {
+        // Charger l'entreprise de l'utilisateur avec la relation user
+        $userEntreprise = Auth::user()->load('entreprise')->entreprise;
         
-        // Vérifier si l'utilisateur est une entreprise
-        if (Auth::user()->role === 'entreprise') {
-            // Charger l'entreprise de l'utilisateur avec la relation user
-            $userEntreprise = Auth::user()->load('entreprise')->entreprise;
-            
-            if (!$userEntreprise) {
-                abort(403, 'Aucune entreprise associée à votre compte.');
-            }
-            
-            // Vérifier si l'entreprise de l'utilisateur correspond à celle du stage
-            if ($userEntreprise->id != $stage->entreprise_id) {
-                abort(403, 'Accès non autorisé à cette offre de stage');
-            }
+        if (!$userEntreprise) {
+            abort(403, 'Aucune entreprise associée à votre compte.');
         }
         
-        // Vérifier si l'étudiant a déjà postulé
-        $aDejaPostule = false;
-        if (Auth::user()->role === 'etudiant') {
-            $aDejaPostule = Candidature::where('etudiant_id', Auth::id())
-                ->where('stage_id', $stage->id)
-                ->exists();
+        // Vérifier si l'entreprise de l'utilisateur correspond à celle du stage
+        if ($userEntreprise->id != $stage->entreprise_id) {
+            abort(403, 'Accès non autorisé à cette offre de stage');
+        }
+    }
+
+    // Vérifier si l'étudiant a déjà postulé
+    $aDejaPostule = false;
+    if (Auth::user()->role === 'etudiant') {
+        // Bloquer l'accès si le stage n'est pas actif
+        if ($stage->statut !== 'active') {
+            return redirect()->route('stages.index')
+                ->with('error', 'Cette offre est clôturée.');
         }
 
-        return view('stages.show', compact('stage', 'aDejaPostule'));
+        $aDejaPostule = Candidature::where('etudiant_id', Auth::id())
+            ->where('stage_id', $stage->id)
+            ->exists();
     }
+
+    return view('stages.show', compact('stage', 'aDejaPostule'));
+}
+
 
     /**
      * Afficher le formulaire de création (pour les entreprises)
@@ -94,6 +104,8 @@ class StageController extends Controller
         //     abort(403, 'Accès refusé');
         // }
 
+      
+
         return view('stages.create');
     }
 
@@ -101,65 +113,68 @@ class StageController extends Controller
      * Enregistrer un nouveau stage
      */
     public function store(Request $request)
-    {
-        if (Auth::user()->role !== 'entreprise') {
-            abort(403, 'Accès refusé');
-        }
-
-        $request->validate([
-            'titre' => 'required|string|max:255',
-            'description' => 'required|string',
-            'domaine' => 'required|string|max:255',
-            'niveau_requis' => 'required|string|max:255',
-            'duree' => 'required|string|max:255',
-            'lieu' => 'required|string|max:255',
-            'remuneration' => 'nullable|numeric|min:0',
-            'date_debut' => 'required|date|after:today',
-            'date_fin' => 'required|date|after:date_debut',
-            'nombre_places' => 'required|integer|min:1',
-            'competences_requises' => 'nullable|array'
-        ]);
-
-        // Récupérer l'utilisateur connecté
-        $user = Auth::user();
-        
-        // Vérifier si l'utilisateur a une entreprise associée
-        $entreprise = $user->entreprise;
-        
-        // Si l'entreprise n'existe pas, la créer
-        if (!$entreprise) {
-            $entreprise = Entreprise::create([
-                'user_id' => $user->id,
-                'nom' => $user->nom,
-                'email' => $user->email,
-                'adresse' => $user->adresse ?? null,
-                'domaine' => $request->domaine ?? null,
-                'telephone' => $user->telephone ?? null,
-            ]);
-        }
-
-        $stage = Stage::create([
-            'entreprise_id' => $entreprise->id,
-            'titre' => $request->titre,
-            'description' => $request->description,
-            'domaine' => $request->domaine,
-            'niveau_requis' => $request->niveau_requis,
-            'duree' => $request->duree,
-            'lieu' => $request->lieu,
-            'remuneration' => $request->remuneration,
-            'date_debut' => $request->date_debut,
-            'date_fin' => $request->date_fin,
-            'nombre_places' => $request->nombre_places,
-            'competences_requises' => $request->competences_requises
-        ]);
-
-        return redirect()->route('stages.show', $stage)
-            ->with('success', 'Offre de stage créée avec succès !');
+{
+    if (Auth::user()->role !== 'entreprise') {
+        abort(403, 'Accès refusé');
     }
 
-    /**
-     * Afficher le formulaire d'édition
-     */
+    $request->validate([
+        'titre' => 'required|string|max:255',
+        'description' => 'required|string',
+        'domaine' => 'required|string|max:255',
+        'niveau_requis' => 'required|string|max:255',
+        'duree' => 'required|string|max:255',
+        'lieu' => 'required|string|max:255',
+        'remuneration' => 'nullable|numeric|min:0',
+        'date_debut' => 'required|date|after:today',
+        'date_fin' => 'required|date|after:date_debut',
+        'nombre_places' => 'required|integer|min:1',
+        'competences_requises' => 'nullable|array'
+    ]);
+
+    // Récupérer l'utilisateur connecté
+    $user = Auth::user();
+    
+    // Vérifier si l'utilisateur a une entreprise associée
+    $entreprise = $user->entreprise;
+    
+    // Si l'entreprise n'existe pas, la créer
+    if (!$entreprise) {
+        $entreprise = Entreprise::create([
+            'user_id' => $user->id,
+            'nom' => $user->nom,
+            'email' => $user->email,
+            'adresse' => $user->adresse ?? null,
+            'domaine' => $request->domaine ?? null,
+            'telephone' => $user->telephone ?? null,
+        ]);
+    }
+
+    // Création de l’offre de stage
+    $stage = Stage::create([
+        'entreprise_id' => $entreprise->id,
+        'titre' => $request->titre,
+        'description' => $request->description,
+        'domaine' => $request->domaine,
+        'niveau_requis' => $request->niveau_requis,
+        'duree' => $request->duree,
+        'lieu' => $request->lieu,
+        'remuneration' => $request->remuneration,
+        'date_debut' => $request->date_debut,
+        'date_fin' => $request->date_fin,
+        'nombre_places' => $request->nombre_places,
+        'competences_requises' => $request->competences_requises
+    ]);
+
+    //  Envoi de la notification avec le titre de l’offre
+    $users = User::where('role', 'etudiant')->get(); // uniquement les étudiants
+    Notification::send($users, new JobofferNotifications($stage->titre));
+
+    // Redirection finale
+    return redirect()->route('stages.show', $stage)
+        ->with('success', 'Offre de stage créée avec succès et notification envoyée !');
+}
+
     public function edit(Stage $stage)
     {
         if (Auth::id() !== $stage->entreprise_id) {
@@ -203,10 +218,7 @@ class StageController extends Controller
      */
     public function destroy(Stage $stage)
     {
-        if (Auth::id() !== $stage->entreprise_id) {
-            abort(403, 'Accès refusé');
-        }
-
+        
         $stage->delete();
 
         return redirect()->route('dashboard')
@@ -259,4 +271,21 @@ class StageController extends Controller
         return redirect()->route('stages.show', $stage)
             ->with('success', 'Candidature envoyée avec succès !');
     }
+
+
+  public function toggleStatus(Stage $stage)
+{
+    // Vérifie que l'utilisateur est bien une entreprise et que c'est son stage
+    if (Auth::user()->role !== 'entreprise' || Auth::user()->entreprise->id !== $stage->entreprise_id) {
+        abort(403, "Accès interdit");
+    }
+
+    // Basculer le statut
+    $stage->statut = $stage->statut === 'active' ? 'inactive' : 'active';
+    $stage->save();
+
+    return redirect()->back()->with('success', 'Statut du stage mis à jour.');
+}
+
+    
 }

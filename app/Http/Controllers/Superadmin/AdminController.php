@@ -24,7 +24,10 @@ class AdminController extends Controller
     public function index()
     {
         $admins = User::where('role', 'admin')->get();
-        return view('superadmin.admins.index', compact('admins'));
+        
+        // dd($admins);
+     return view('superadmin.admins.index',  ['stages'=>$stages,'admins'=>$admins]);
+
     }
 
     public function create()
@@ -107,51 +110,17 @@ public function dashboard()
     ));
 }
 
-    public function edit($id)
-    {
-        $admin = User::findOrFail($id);
-        return view('superadmin.admins.edit', compact('admin'));
-    }
+    // public function etudiants()
+    // {
+    //     $etudiants = \App\Models\User::where('role', 'etudiant')->get();
+    //     return view('superadmin.admins.etudiants', compact('etudiants'));
+    // }
 
-    public function update(Request $request, $id)
-    {
-        $admin = User::findOrFail($id);
-        
-        $request->validate([
-            'nom' => 'required|string|max:255',
-            'prenom' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $id,
-            'password' => 'nullable|confirmed|min:6',
-        ]);
+    // public function entreprises()
+    // {
+    //     $entreprises = \App\Models\User::where('role', 'entreprise')->get();
+    //     return view('superadmin.admins.entreprises', compact('entreprises'));
+    // 
 
-        $data = [
-            'nom' => $request->nom,
-            'prenom' => $request->prenom,
-            'email' => $request->email,
-        ];
-
-        if ($request->filled('password')) {
-            $data['password'] = Hash::make($request->password);
-        }
-
-        $admin->update($data);
-
-        return redirect()->route('superadmin.admins.index')
-            ->with('success', 'Administrateur mis à jour avec succès');
-    }
-
-    public function destroy($id)
-    {
-        $admin = User::findOrFail($id);
-        // Prevent deleting yourself
-        if ($admin->id === auth()->id()) {
-            return redirect()->back()
-                ->with('error', 'Vous ne pouvez pas supprimer votre propre compte');
-        }
-        
-        $admin->delete();
-        
-        return redirect()->route('superadmin.admins.index')
-            ->with('success', 'Administrateur supprimé avec succès');
-    }
+    // public function stages()
 }

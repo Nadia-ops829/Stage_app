@@ -27,11 +27,22 @@
                         <i class="fas fa-arrow-left me-1"></i>
                         Retour aux offres
                     </a>
+
                     @if(Auth::user()->role === 'entreprise' && Auth::id() === $stage->entreprise_id)
                         <a href="{{ route('stages.edit', $stage) }}" class="btn btn-outline-primary">
                             <i class="fas fa-edit me-1"></i>
                             Modifier
                         </a>
+
+                        <!-- Bouton Activer/Inactiver -->
+                        <form action="{{ route('stages.toggleStatus', $stage) }}" method="POST" style="display:inline">
+                            @csrf
+                            @method('PATCH')
+                            <button type="submit" class="btn btn-outline-warning">
+                                <i class="fas fa-toggle-on me-1"></i>
+                                {{ $stage->statut === 'active' ? 'Mettre Inactif' : 'Mettre Actif' }}
+                            </button>
+                        </form>
                     @endif
                 </div>
             </div>
@@ -96,6 +107,20 @@
                             <span class="badge bg-primary fs-6">{{ $stage->domaine }}</span>
                         </div>
                     </div>
+
+                    @if(Auth::user()->role === 'entreprise' && Auth::user()->entreprise->id === $stage->entreprise_id)
+
+   <form action="{{ route('stages.toggleStatus', $stage) }}" method="POST" class="d-inline">
+    @csrf
+    @method('PATCH')
+    <button type="submit" class="btn {{ $stage->statut === 'active' ? 'btn-warning' : 'btn-success' }}">
+        <i class="fas {{ $stage->statut === 'active' ? 'fa-toggle-off' : 'fa-toggle-on' }} me-1"></i>
+        {{ $stage->statut === 'active' ? 'Désactiver' : 'Activer' }}
+    </button>
+</form>
+
+@endif
+
 
                     @if($stage->competences_requises)
                         <div class="mb-4">
@@ -174,12 +199,16 @@
                                 <i class="fas fa-info-circle me-2"></i>
                                 Vous avez déjà postulé à ce stage.
                             </div>
+                        @elseif($stage->statut !== 'active')
+                            <div class="alert alert-warning">
+                                <i class="fas fa-exclamation-triangle me-2"></i>
+                                Cette offre est actuellement inactive.
+                            </div>
                         @else
                             <form action="{{ route('stages.postuler', $stage) }}" method="POST" enctype="multipart/form-data">
                                 @csrf
-                                
 
-                                 <div class="mb-3">
+                                <div class="mb-3">
                                     <label for="lettre_motivation" class="form-label">Lettre de motivation *</label>
                                     <input type="file" name="lettre_motivation" id="lettre_motivation" class="form-control @error('lettre_motivation') is-invalid @enderror" accept=".pdf,.doc,.docx">
                                     @error('lettre_motivation')
@@ -187,7 +216,6 @@
                                     @enderror
                                     <small class="form-text text-muted">PDF, DOC ou DOCX (max 2MB)</small>
                                 </div>
-
 
                                 <div class="mb-3">
                                     <label for="cv" class="form-label">CV (optionnel)</label>
@@ -216,4 +244,4 @@
     background: linear-gradient(45deg, #007bff, #6610f2);
 }
 </style>
-@endsection 
+@endsection

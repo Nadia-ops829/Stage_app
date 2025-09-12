@@ -26,25 +26,27 @@ Route::middleware(['auth'])->group(function () {
     // Routes pour les stages
     Route::get('/stages', [StageController::class, 'index'])->name('stages.index');
     Route::post('/stages/{stage}/postuler', [StageController::class, 'postuler'])->name('stages.postuler');
+    
+
 
     // Routes pour les candidatures
     Route::get('/candidatures/mes-candidatures', [CandidatureController::class, 'mesCandidatures'])->name('candidatures.mes-candidatures');
     Route::get('/candidatures/{candidature}', [CandidatureController::class, 'show'])->name('candidatures.show');
     Route::post('/candidatures/{candidature}/repondre', [CandidatureController::class, 'repondre'])->name('candidatures.repondre');
 
-    // Route pour voir les détails d'un stage (accessible à tous les utilisateurs connectés)
-    Route::get('/stages/{stage}', [StageController::class, 'show'])->name('stages.show');
+    
+    
 
     // Routes pour les entreprises (création/modification de stages)
-    Route::middleware(['role:entreprise'])->group(function () {
+    
         Route::get('/stages/create', [StageController::class, 'create'])->name('stages.create');
         Route::post('/stages', [StageController::class, 'store'])->name('stages.store');
+        Route::get('/stages/{stage}', [StageController::class, 'show'])->name('stages.show');
         Route::get('/stages/{stage}/edit', [StageController::class, 'edit'])->name('stages.edit');
         Route::put('/stages/{stage}', [StageController::class, 'update'])->name('stages.update');
-        Route::delete('/stages/{stage}', [StageController::class, 'destroy'])->name('stages.destroy');
         Route::get('/stages/{stage}/candidatures', [CandidatureController::class, 'index'])->name('candidatures.index');
         Route::get('/candidatures-recues', [CandidatureController::class, 'candidaturesRecues'])->name('candidatures.recues');
-    });
+    
 
     // Routes pour superadmin
     Route::middleware(['role:super_admin'])->prefix('superadmin')->name('superadmin.')->group(function () {
@@ -83,9 +85,11 @@ Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(functi
     // Dashboard admin
     Route::get('dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
     // Page des rapports
-    Route::get('rapports', [AdminController::class, 'rapports'])->name('rapports.index');
-    // Statistiques
+    
+    // Statistiques admin
     Route::get('statistiques', [AdminController::class, 'statistiques'])->name('statistiques');
+
+   
 });
 
         // Routes pour les rapports de stage
@@ -104,4 +108,20 @@ Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(functi
 // ...existing code...
 // Route pour modifier une entreprise (admin)
 Route::get('admin/entreprises/{entreprise}/edit', [EntrepriseController::class, 'edit'])->name('admin.entreprises.edit');
+
+
+ Route::delete('/stages/{stages}', [StageController::class, 'destroy'])->name('stages.destroy');
+
+Route::get('/entreprises/{id}', [EntrepriseController::class, 'show'])->name('entreprises.show');
+
+// Route pour toutes les candidatures (Admin)
+
+    Route::get('/candidatures', [App\Http\Controllers\Admin\AdminController::class, 'candidatures'])->name('candidatures.index');
+
+   Route::patch('/stages/{stage}/toggle', [StageController::class, 'toggleStatus'])
+    ->name('stages.toggleStatus')
+    ->middleware(['auth']);
+
+
+
 

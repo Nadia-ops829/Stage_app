@@ -8,6 +8,7 @@
                 <div class="card-header">
                     Détails du Rapport de Stage
                 </div>
+                
 
                 <div class="card-body">
                     <div class="mb-4">
@@ -87,6 +88,8 @@
                         <a href="{{ route('rapports.index') }}" class="btn btn-secondary">
                             <i class="fas fa-arrow-left"></i> Retour à la liste
                         </a>
+                        <div></div>
+                        
                         <div>
                             <a href="{{ route('rapports.telecharger', $rapport->id) }}" 
                                class="btn btn-primary">

@@ -83,7 +83,7 @@ class User extends Authenticatable
     // Relation avec l'entreprise (pour les utilisateurs de type entreprise)
     public function entreprise()
     {
-        return $this->hasOne(Entreprise::class, 'user_id');
+        return $this->hasOne(Entreprise::class);
     }
 
 

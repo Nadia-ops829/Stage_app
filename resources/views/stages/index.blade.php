@@ -73,96 +73,106 @@
     </div>
 
     <!-- Stages List -->
-    <div class="row">
-        @forelse($stages as $stage)
-            <div class="col-lg-6 col-xl-4 mb-4">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-header bg-white">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div>
-                                <h5 class="card-title mb-1">{{ $stage->titre }}</h5>
-                                <p class="text-muted mb-0">{{ $stage->entreprise->nom ?? 'Entreprise non spécifiée' }}</p>
-                            </div>
-                            <span class="badge bg-success">Active</span>
+<div class="row">
+    @forelse($stages as $stage)
+        <div class="col-lg-6 col-xl-4 mb-4">
+            <div class="card border-0 shadow-sm h-100">
+                <div class="card-header bg-white">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <h5 class="card-title mb-1">{{ $stage->titre }}</h5>
+                            <p class="text-muted mb-0">{{ $stage->entreprise->nom ?? 'Entreprise non spécifiée' }}</p>
+                        </div>
+                        <span class="badge {{ $stage->statut === 'active' ? 'bg-success' : 'bg-secondary' }}">
+                            {{ ucfirst($stage->statut) }}
+                        </span>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <p class="card-text text-muted">{{ Str::limit($stage->description, 150) }}</p>
+
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <small class="text-muted">
+                                <i class="fas fa-map-marker-alt me-1"></i>
+                                {{ $stage->lieu }}
+                            </small>
+                        </div>
+                        <div class="col-6">
+                            <small class="text-muted">
+                                <i class="fas fa-clock me-1"></i>
+                                {{ $stage->duree }}
+                            </small>
                         </div>
                     </div>
-                    <div class="card-body">
+
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <small class="text-muted">
+                                <i class="fas fa-graduation-cap me-1"></i>
+                                {{ $stage->niveau_requis }}
+                            </small>
+                        </div>
+                        <div class="col-6">
+                            <small class="text-muted">
+                                <i class="fas fa-users me-1"></i>
+                                {{ $stage->getPlacesRestantes() }} places
+                            </small>
+                        </div>
+                    </div>
+
+                    @if($stage->remuneration)
                         <div class="mb-3">
-                            <p class="card-text text-muted">{{ Str::limit($stage->description, 150) }}</p>
+                            <small class="text-success">
+                                <i class="fas fa-fcfa-sign me-1"></i>
+                                {{ $stage->remuneration }}FCFA/mois
+                            </small>
                         </div>
-                        
-                        <div class="row mb-3">
-                            <div class="col-6">
-                                <small class="text-muted">
-                                    <i class="fas fa-map-marker-alt me-1"></i>
-                                    {{ $stage->lieu }}
-                                </small>
-                            </div>
-                            <div class="col-6">
-                                <small class="text-muted">
-                                    <i class="fas fa-clock me-1"></i>
-                                    {{ $stage->duree }}
-                                </small>
-                            </div>
-                        </div>
+                    @endif
 
-                        <div class="row mb-3">
-                            <div class="col-6">
-                                <small class="text-muted">
-                                    <i class="fas fa-graduation-cap me-1"></i>
-                                    {{ $stage->niveau_requis }}
-                                </small>
-                            </div>
-                            <div class="col-6">
-                                <small class="text-muted">
-                                    <i class="fas fa-users me-1"></i>
-                                    {{ $stage->getPlacesRestantes() }} places
-                                </small>
-                            </div>
-                        </div>
-
-                        @if($stage->remuneration)
-                            <div class="mb-3">
-                                <small class="text-success">
-                                    <i class="fas fa-fcfa-sign me-1"></i>
-                                    {{ $stage->remuneration }}FCFA/mois
-                                </small>
-                            </div>
-                        @endif
-
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="badge bg-primary">{{ $stage->domaine }}</span>
-                            <a href="{{ route('stages.show', $stage) }}" class="btn btn-outline-primary btn-sm">
-                                Voir détails
-                            </a>
-                        </div>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <span class="badge bg-primary">{{ $stage->domaine }}</span>
+                        <a href="{{ route('stages.show', $stage) }}" class="btn btn-outline-primary btn-sm">
+                            Voir détails
+                        </a>
                     </div>
-                    <div class="card-footer bg-white">
-                        <small class="text-muted">
-                            <i class="fas fa-calendar me-1"></i>
-                            Du {{ $stage->date_debut->format('d/m/Y') }} au {{ $stage->date_fin->format('d/m/Y') }}
-                        </small>
-                    </div>
+
+                    @if(Auth::user()->role === 'entreprise' && Auth::id() === $stage->entreprise_id)
+                        <form action="{{ route('stages.toggleStatus', $stage) }}" method="POST" class="mt-2">
+                            @csrf
+                            @method('PATCH')
+                            <button type="submit" class="btn btn-sm btn-outline-warning w-100">
+                                {{ $stage->statut === 'active' ? 'Mettre Inactif' : 'Mettre Actif' }}
+                            </button>
+                        </form>
+                    @endif
+                </div>
+                <div class="card-footer bg-white">
+                    <small class="text-muted">
+                        <i class="fas fa-calendar me-1"></i>
+                        Du {{ $stage->date_debut->format('d/m/Y') }} au {{ $stage->date_fin->format('d/m/Y') }}
+                    </small>
                 </div>
             </div>
-        @empty
-            <div class="col-12">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-body text-center py-5">
-                        <i class="fas fa-briefcase fa-3x text-muted mb-3"></i>
-                        <h5 class="text-muted">Aucune offre de stage</h5>
-                        <p class="text-muted">Aucune offre de stage ne correspond à vos critères.</p>
-                        @if(Auth::user()->role === 'entreprise')
-                            <a href="{{ route('stages.create') }}" class="btn btn-primary">
-                                <i class="fas fa-plus me-1"></i>
-                                Publier une offre
-                            </a>
-                        @endif
-                    </div>
+        </div>
+    @empty
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body text-center py-5">
+                    <i class="fas fa-briefcase fa-3x text-muted mb-3"></i>
+                    <h5 class="text-muted">Aucune offre de stage</h5>
+                    <p class="text-muted">Aucune offre de stage ne correspond à vos critères.</p>
+                    @if(Auth::user()->role === 'entreprise')
+                        <a href="{{ route('stages.create') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-plus me-1"></i>
+                            Publier une offre
+                        </a>
+                    @endif
                 </div>
             </div>
-        @endforelse
-    </div>
+        </div>
+    @endforelse
+</div>
 
     <!-- Pagination -->
     @if($stages->hasPages())

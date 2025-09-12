@@ -12,6 +12,7 @@
                     <div class="d-flex justify-content-between align-items-center">
                         <div>
                             <h4 class="mb-0">
+                                <a href="{{ route('stages.create') }}" class="btn btn-light btn-sm">
                                 <i class="fas fa-plus me-2"></i>
                                 Publier une Offre de Stage
                             </h4>

@@ -8,19 +8,22 @@
     <div class="row mb-4">
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-center">
-                <div>
+               <div>
                     <h1 class="h3 mb-2">
-                        <i class="fas fa-building me-2"></i>
-                        Dashboard Entreprise
+                         <i class="fas fa-building me-2"></i>
+                          {{ Auth::user()->entreprise->nom }}
                     </h1>
-                    <p class="text-muted mb-0">Bienvenue {{ Auth::user()->nom }} ! Gérez vos offres de stage</p>
+                    <p class="text-muted mb-0">
+                        Bienvenue {{ Auth::user()->nom }} ! Gérez vos offres de stage
+                    </p>
                 </div>
+
                 <div class="d-flex gap-2">
-                    <a href="#" class="btn btn-outline-primary">
-                        <i class="fas fa-plus me-1"></i>
-                        Publier une offre
-                    </a>
-                    <a href="#" class="btn btn-outline-success">
+                    <a href="{{ route('stages.create') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-plus me-2"></i>
+                            Publier une offre
+                        </a>
+                    <a href="{{ route('candidatures.recues') }}"class="btn btn-outline-success">
                         <i class="fas fa-users me-1"></i>
                         Gérer les candidatures
                     </a>
@@ -120,27 +123,7 @@
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6 mb-4">
-            <div class="card border-0 shadow-sm h-100">
-                <div class="card-body">
-                    <div class="d-flex align-items-center">
-                        <div class="flex-shrink-0">
-                            <div class="bg-info rounded-circle p-3">
-                                <i class="fas fa-star text-white"></i>
-                            </div>
-                        </div>
-                        <div class="flex-grow-1 ms-3">
-                            <h6 class="card-title text-muted mb-1">Candidatures acceptées</h6>
-                            <h3 class="mb-0">{{ $stats['candidatures_acceptees'] ?? 0 }}</h3>
-                            <small class="text-success">
-                                <i class="fas fa-check-circle me-1"></i>
-                                Candidatures validées
-                            </small>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        
     </div>
 
     <!-- Main Content Row -->
@@ -283,22 +266,19 @@
                 </div>
                 <div class="card-body">
                     <div class="d-grid gap-2">
-                        <a href="#" class="btn btn-outline-primary">
+                        <a href="{{ route('stages.create') }}" class="btn btn-outline-primary">
                             <i class="fas fa-plus me-2"></i>
                             Publier une offre
                         </a>
-                        <a href="#" class="btn btn-outline-success">
+                        <a href="{{ route('candidatures.recues') }}" class="btn btn-outline-success">
                             <i class="fas fa-users me-2"></i>
                             Gérer les candidatures
                         </a>
-                        <a href="#" class="btn btn-outline-info">
+                        <a href="{{ route('profile.edit') }}" class="btn btn-outline-info">
                             <i class="fas fa-building me-2"></i>
                             Modifier le profil
                         </a>
-                        <a href="#" class="btn btn-outline-warning">
-                            <i class="fas fa-chart-bar me-2"></i>
-                            Voir les statistiques
-                        </a>
+                        
                     </div>
                 </div>
             </div>
@@ -306,84 +286,53 @@
     </div>
 
     <!-- Active Job Offers -->
-    <div class="row">
-        <div class="col-12">
-            <div class="card border-0 shadow-sm">
-                <div class="card-header bg-white">
-                    <h5 class="mb-0">
-                        <i class="fas fa-briefcase me-2"></i>
-                        Nos offres de stage actives
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <div class="row">
+<div class="row">
+    <div class="col-12">
+        <div class="card border-0 shadow-sm">
+            <div class="card-header bg-white">
+                <h5 class="mb-0">
+                    <i class="fas fa-briefcase me-2"></i>
+                    Offres de stage de {{ $entreprise->nom }}
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    @forelse($offres as $offre)
                         <div class="col-md-4 mb-3">
                             <div class="card border h-100">
                                 <div class="card-body">
                                     <div class="d-flex justify-content-between align-items-start mb-3">
-                                        <h6 class="card-title mb-0">Développeur Full-Stack</h6>
-                                        <span class="badge bg-success">Active</span>
+                                        <h6 class="card-title mb-0">{{ $offre->titre }}</h6>
+                                        <span class="badge bg-success">{{ ucfirst($offre->statut) }}</span>
                                     </div>
                                     <p class="card-text small text-muted mb-3">
                                         <i class="fas fa-map-marker-alt me-1"></i>
-                                        Paris, France
+                                        {{ $offre->lieu ?? 'Non précisé' }}
                                     </p>
                                     <div class="d-flex justify-content-between align-items-center">
                                         <small class="text-muted">
                                             <i class="fas fa-users me-1"></i>
-                                            8 candidatures
+                                            {{ $offre->candidatures->count() }} candidatures
                                         </small>
-                                        <a href="#" class="btn btn-sm btn-outline-primary">Voir détails</a>
+                                        <a href="{{ route('stages.show', $offre->id) }}" class="btn btn-sm btn-outline-primary">
+                                            Voir détails
+                                        </a>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-4 mb-3">
-                            <div class="card border h-100">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-start mb-3">
-                                        <h6 class="card-title mb-0">Data Scientist</h6>
-                                        <span class="badge bg-success">Active</span>
-                                    </div>
-                                    <p class="card-text small text-muted mb-3">
-                                        <i class="fas fa-map-marker-alt me-1"></i>
-                                        Lyon, France
-                                    </p>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <small class="text-muted">
-                                            <i class="fas fa-users me-1"></i>
-                                            12 candidatures
-                                        </small>
-                                        <a href="#" class="btn btn-sm btn-outline-primary">Voir détails</a>
-                                    </div>
-                                </div>
-                            </div>
+                    @empty
+                        <div class="col-12 text-center py-4">
+                            <i class="fas fa-briefcase fa-2x text-muted mb-3"></i>
+                            <p class="text-muted mb-0">Aucune offre active pour le moment</p>
                         </div>
-                        <div class="col-md-4 mb-3">
-                            <div class="card border h-100">
-                                <div class="card-body">
-                                    <div class="d-flex justify-content-between align-items-start mb-3">
-                                        <h6 class="card-title mb-0">UX/UI Designer</h6>
-                                        <span class="badge bg-success">Active</span>
-                                    </div>
-                                    <p class="card-text small text-muted mb-3">
-                                        <i class="fas fa-map-marker-alt me-1"></i>
-                                        Toulouse, France
-                                    </p>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <small class="text-muted">
-                                            <i class="fas fa-users me-1"></i>
-                                            6 candidatures
-                                        </small>
-                                        <a href="#" class="btn btn-sm btn-outline-primary">Voir détails</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    @endforelse
                 </div>
             </div>
         </div>
+    </div>
+</div>
+
     </div>
 </div>
 

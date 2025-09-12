@@ -7,23 +7,24 @@
     <div class="row justify-content-center">
         <div class="col-lg-8">
             <!-- Header Card -->
-            <div class="card shadow-sm border-0 mb-4">
-                <div class="card-header bg-primary text-white">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <h4 class="mb-0">
-                                <i class="fas fa-building me-2"></i>
-                                Créer une nouvelle entreprise
-                            </h4>
-                            <small>Ajoutez une nouvelle entreprise partenaire à votre plateforme</small>
-                        </div>
-                        <a href="{{ route('admin.entreprises.index') }}" class="btn btn-light btn-sm">
-                            <i class="fas fa-arrow-left me-1"></i>
-                            Retour à la liste
-                        </a>
-                    </div>
-                </div>
+<div class="card shadow-sm border-0 mb-4">
+    <div class="card-header bg-primary text-white">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h4 class="mb-0">
+                    <i class="fas fa-building me-2"></i>
+                    Créer une nouvelle entreprise
+                </h4>
+                <small>Ajoutez une nouvelle entreprise partenaire à votre plateforme</small>
             </div>
+            <a href="{{ route('admin.entreprises.create') }}" class="btn btn-light btn-sm">
+                <i class="fas fa-plus me-1"></i>
+                Créer une entreprise
+            </a>
+        </div>
+    </div>
+</div>
+
 
             <!-- Form Card -->
             

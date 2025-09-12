@@ -6,8 +6,12 @@
         <div class="col-md-8">
             <div class="card">
                 <div class="card-header">
+                    <form method="POST" action="{{ route('rapports.store') }}" enctype="multipart/form-data">
                     Déposer un nouveau rapport de stage
                 </div>
+
+
+                
 
                 <div class="card-body">
                     <form method="POST" action="{{ route('rapports.store') }}" enctype="multipart/form-data">
@@ -37,6 +41,8 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
+
+
 
                         <div class="mb-3">
                             <label for="commentaire_etudiant" class="form-label">Commentaire (optionnel)</label>
