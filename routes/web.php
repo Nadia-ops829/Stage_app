@@ -52,6 +52,9 @@ Route::middleware(['auth'])->group(function () {
     Route::middleware(['role:super_admin'])->prefix('superadmin')->name('superadmin.')->group(function () {
         Route::get('/dashboard', [\App\Http\Controllers\Superadmin\AdminController::class, 'dashboard'])->name('dashboard');
         
+        Route::get('/stages', [\App\Http\Controllers\Superadmin\AdminController::class, 'stages'])
+        ->name('stages.index');
+        
         // Admin management routes
         Route::get('/admins', [\App\Http\Controllers\Superadmin\AdminController::class, 'index'])->name('admins.index');
         Route::get('/admins/create', [\App\Http\Controllers\Superadmin\AdminController::class, 'create'])->name('admins.create');
@@ -121,6 +124,16 @@ Route::get('/entreprises/{id}', [EntrepriseController::class, 'show'])->name('en
    Route::patch('/stages/{stage}/toggle', [StageController::class, 'toggleStatus'])
     ->name('stages.toggleStatus')
     ->middleware(['auth']);
+
+    Route::middleware(['auth', 'role:super_admin'])
+    ->prefix('superadmin')
+    ->name('superadmin.admins.')
+    ->group(function () {
+        // Liste des étudiants
+        Route::get('/etudiants', [\App\Http\Controllers\Superadmin\AdminController::class, 'etudiants'])
+            ->name('etudiants');
+});
+
 
 
 

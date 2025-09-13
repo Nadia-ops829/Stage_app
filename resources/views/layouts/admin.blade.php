@@ -114,15 +114,28 @@
 
     <!-- Navigation selon le rôle -->
     @if(Auth::user()->role === 'super_admin')
-        <a href="#" class="{{ request()->routeIs('superadmin.stats.*') ? 'active' : '' }}">
-            <i class="fas fa-chart-line me-2"></i> Statistiques Globales
-        </a>
-        <a href="#" class="{{ request()->routeIs('superadmin.config.*') ? 'active' : '' }}">
-            <i class="fas fa-cog me-2"></i> Configuration
-        </a>
-        <a href="#" class="{{ request()->routeIs('superadmin.security.*') ? 'active' : '' }}">
-            <i class="fas fa-shield-alt me-2"></i> Sécurité
-        </a>
+    <a href="{{ route('superadmin.dashboard') }}" class="{{ request()->routeIs('superadmin.dashboard*') ? 'active' : '' }}">
+    <i class="fas fa-users-cog me-2"></i> Tableau de bord
+</a>
+        <a href="{{ route('superadmin.admins.index') }}" class="{{ request()->routeIs('superadmin.admins.*') ? 'active' : '' }}">
+    <i class="fas fa-users-cog me-2"></i> Gestion des Admins
+</a>
+
+<a href="{{ route('admin.entreprises.create') }}" class="{{ request()->routeIs('admin.entreprises.*') ? 'active' : '' }}">
+    <i class="fas fa-building me-2"></i> Gestion des Entreprises
+</a>
+
+<a href="{{ route('superadmin.admins.etudiants') }}" class="{{ request()->routeIs('superadmin.etudiants.*') ? 'active' : '' }}">
+    <i class="fas fa-user-graduate me-2"></i> Gestion des Étudiants
+</a>
+
+<a href="{{ route('superadmin.stages.index') }}" class="{{ request()->routeIs('superadmin.stages.*') ? 'active' : '' }}">
+    <i class="fas fa-handshake me-2"></i> Statistiques des Stages
+</a>
+
+
+       
+        
 
     @elseif(Auth::user()->role === 'admin')
         <a href="{{ route('admin.dashboard') }}" class="{{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">

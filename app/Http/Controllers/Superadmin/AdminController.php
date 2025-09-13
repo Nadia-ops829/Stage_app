@@ -11,7 +11,6 @@ use App\Models\Entreprise;
 use App\Models\Stage;
 use App\Models\Candidature;
 use App\Models\Rapport;
-use App\Models\Statistiques;
 use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
@@ -21,20 +20,26 @@ class AdminController extends Controller
         $this->middleware(['auth', 'role:super_admin']);
     }
 
+    /**
+     * Affiche la liste des administrateurs
+     */
     public function index()
     {
         $admins = User::where('role', 'admin')->get();
-        
-        // dd($admins);
-     return view('superadmin.admins.index',  ['stages'=>$stages,'admins'=>$admins]);
-
+        return view('superadmin.admins.index', compact('admins'));
     }
 
+    /**
+     * Formulaire de création d'un nouvel utilisateur
+     */
     public function create()
     {
         return view('superadmin.admins.create');
     }
 
+    /**
+     * Stocke un nouvel utilisateur (admin ou entreprise)
+     */
     public function store(Request $request)
     {
         $request->validate([
@@ -61,66 +66,81 @@ class AdminController extends Controller
         }
 
         User::create($data);
-        // dd($data);
 
-     // return redirect()->route('superadmin.admins.index')->with('success', 'Utilisateur créé avec succès.');
+        return redirect()->route('superadmin.admins.index')
+                         ->with('success', 'Utilisateur créé avec succès.');
     }
 
+    /**
+     * Dashboard superadmin
+     */
+    public function dashboard()
+    {
+        // Statistiques Entreprises
+        $totalEntreprises = Entreprise::count();
+        $nouvellesEntreprisesMois = Entreprise::where('created_at', '>=', now()->startOfMonth())->count();
+        $entreprisesActives = Entreprise::where('created_at', '>=', now()->subDays(30))->count();
 
-    
-public function dashboard()
+        // Statistiques Étudiants
+        $totalEtudiants = Etudiant::count();
+        $nouveauxEtudiantsMois = User::where('created_at', '>=', now()->startOfMonth())->count();
+        $etudiantsActifs = User::where('created_at', '>=', now()->subDays(30))->count();
+
+        // Statistiques Stages
+        $totalStages = Stage::count();
+        $nouveauxStagesMois = Stage::where('created_at', '>=', now()->startOfMonth())->count();
+
+        // Statistiques Candidatures
+        $totalCandidatures = Candidature::count();
+        $nouvellesCandidaturesMois = Candidature::where('created_at', '>=', now()->startOfMonth())->count();
+
+        // Listes récentes pour affichage
+        $derniersEtudiants = User::latest()->take(5)->get();
+        $dernieresCandidatures = Candidature::latest()->take(5)->get();
+        $dernieresEntreprises = Entreprise::latest()->take(5)->get();
+
+        // Activité récente du système (exemple basé sur les actions sur les admins/entreprises)
+        $recentActivities = User::latest()->take(5)->get()->map(function ($user) {
+            return (object) [
+                'action' => $user->role === 'admin' ? 'Nouvel administrateur créé' : 'Nouvelle entreprise ajoutée',
+                'user' => $user,
+                'details' => $user->email,
+                'status' => 'success',
+                'created_at' => $user->created_at,
+            ];
+        });
+
+        return view('dashboard_superadmin', compact(
+            'totalEntreprises',
+            'nouvellesEntreprisesMois',
+            'entreprisesActives',
+            'totalEtudiants',
+            'nouveauxEtudiantsMois',
+            'etudiantsActifs',
+            'totalStages',
+            'nouveauxStagesMois',
+            'totalCandidatures',
+            'nouvellesCandidaturesMois',
+            'derniersEtudiants',
+            'dernieresCandidatures',
+            'dernieresEntreprises',
+            
+        ));
+    }
+
+    public function etudiants()
 {
-    // Statistiques Entreprises
-    $totalEntreprises = Entreprise::count();
-    $nouvellesEntreprisesMois = Entreprise::where('created_at', '>=', now()->startOfMonth())->count();
-    $entreprisesActives = Entreprise::where('created_at', '>=', now()->subDays(30))->count();
-
-    // Statistiques Étudiants
-    $totalEtudiants = Etudiant::count();
-    $nouveauxEtudiantsMois = Etudiant::where('created_at', '>=', now()->startOfMonth())->count();
-    $etudiantsActifs = Etudiant::where('created_at', '>=', now()->subDays(30))->count();
-
-    // Statistiques Stages
-    $totalStages = Stage::count();
-    $nouveauxStagesMois = Stage::where('created_at', '>=', now()->startOfMonth())->count();
-
-    // Statistiques Candidatures
-    $totalCandidatures = Candidature::count();
-    $nouvellesCandidaturesMois = Candidature::where('created_at', '>=', now()->startOfMonth())->count();
-
-    // Listes pour affichage
-    $derniersEtudiants = Etudiant::latest()->take(5)->get();
-    $dernieresCandidatures = Candidature::latest()->take(5)->get();
-    $dernieres_entreprises = Entreprise::latest()->take(5)->get();
- 
-    return view('dashboard_superadmin', compact(
-        'totalEntreprises',
-        'nouvellesEntreprisesMois',
-        'entreprisesActives',
-        'totalEtudiants',
-        'nouveauxEtudiantsMois',
-        'etudiantsActifs',
-        'totalStages',
-        'nouveauxStagesMois',
-        'totalCandidatures',
-        'nouvellesCandidaturesMois',
-        'derniersEtudiants',
-        'dernieresCandidatures',
-        'dernieres_entreprises'
-    ));
+    $etudiants = \App\Models\User::where('role', 'etudiant')->get();
+    return view('superadmin..admins.etudiants', compact('etudiants'));
 }
 
-    // public function etudiants()
-    // {
-    //     $etudiants = \App\Models\User::where('role', 'etudiant')->get();
-    //     return view('superadmin.admins.etudiants', compact('etudiants'));
-    // }
+public function stages()
+{
+    $stagesActifs = \App\Models\Stage::where('statut', 'active')->get();
+    $stagesTermines = \App\Models\Stage::where('statut', 'terminee')->get();
 
-    // public function entreprises()
-    // {
-    //     $entreprises = \App\Models\User::where('role', 'entreprise')->get();
-    //     return view('superadmin.admins.entreprises', compact('entreprises'));
-    // 
+    return view('superadmin.stages.index', compact('stagesActifs', 'stagesTermines'));
+}
 
-    // public function stages()
+
 }

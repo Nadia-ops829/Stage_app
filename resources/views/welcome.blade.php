@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stage_app - Plateforme de gestion de stage</title>
+    <title>EducLink-Espace étudiant et opportunités</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 </head>
@@ -12,7 +12,7 @@
     <header class="bg-white shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center py-4">
-                <div class="text-2xl font-bold text-gray-800">Stage_app</div>
+                <div class="text-2xl font-bold text-gray-800">EducLink</div>
                 <div class="flex space-x-4">
                     <a href="{{ route('register') }}" class="text-gray-600 hover:text-gray-900">Inscription</a>
                     <a href="{{ route('login') }}" class="text-gray-600 hover:text-gray-900">Connexion</a>
@@ -27,11 +27,10 @@
             <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
                 <div>
                     <h1 class="text-4xl lg:text-6xl font-bold mb-6">
-                        Bienvenue sur notre plateforme de gestion de stage
+                        Explorez, postulez, réussissez avec EducLink. .
                     </h1>
                     <p class="text-xl mb-8">
-                        StagePro est une plateforme de gestion de stage où étudiants et entreprises se rencontrent pour construire l'avenir professionnel. Un stage, c'est une opportunité, un avenir !
-                    </p>
+                         EducLink est une plateforme innovante qui connecte les étudiants aux opportunités de stages et les accompagne dans le développement de leur parcours professionnel
                     <p class="text-lg mb-8">
                         Trouve le stage qui te correspond, développe tes compétences, et bâtis ta carrière dès aujourd'hui.
                     </p>
@@ -104,7 +103,7 @@
                     </div>
                     <div>
                         <p class="text-lg mb-6">
-                            Notre équipe est passionnée par la technologie et l'éducation. StagePro est née d'un constat simple : les stages sont essentiels, mais souvent mal gérés.
+                            Notre équipe est passionnée par la technologie et l'éducation. EducLink est née d'un constat simple : les stages sont essentiels, mais souvent mal gérés.
                         </p>
                         <p class="text-lg mb-6">
                             Nous avons créé cette plateforme pour connecter les bons profils aux bonnes opportunités, et faire des stages une vraie passerelle vers le monde professionnel.
@@ -134,81 +133,64 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12">
                 <h2 class="text-4xl font-bold text-gray-800 mb-4">Nos Partenaires</h2>
-                <p class="text-xl text-gray-600">Vous trouverez l'entreprise qui vous convient sur stage_app</p>
+                <p class="text-xl text-gray-600">Vous trouverez l'entreprise qui vous convient sur EducLink</p>
             </div>
             <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8">
                 <!-- Company logos -->
+                
                 <div class="bg-white p-4 rounded-lg shadow-md text-center">
-                    <div class="text-lg font-bold text-blue-600">VIEZMANN</div>
+                    <div class="text-lg font-bold text-red-600">Laborex Burkina</div>
                 </div>
                 <div class="bg-white p-4 rounded-lg shadow-md text-center">
-                    <div class="text-lg font-bold text-red-600">Cora</div>
+                    <div class="text-lg font-bold text-blue-600">Université Virtuelle du Burkina Faso</div>
                 </div>
                 <div class="bg-white p-4 rounded-lg shadow-md text-center">
-                    <div class="text-lg font-bold text-green-600">Auchan</div>
+                    <div class="text-lg font-bold text-green-600">Simplon Burkina</div>
                 </div>
                 <div class="bg-white p-4 rounded-lg shadow-md text-center">
-                    <div class="text-lg font-bold text-gray-600">Peugeot</div>
+                    <div class="text-lg font-bold text-gray-600">Laborex Burkina</div>
                 </div>
                 <div class="bg-white p-4 rounded-lg shadow-md text-center">
-                    <div class="text-lg font-bold text-blue-600">Autopolis.lu</div>
+                    <div class="text-lg font-bold text-blue-600">Université Virtuelle du Burkina Faso</div>
                 </div>
                 <div class="bg-white p-4 rounded-lg shadow-md text-center">
-                    <div class="text-lg font-bold text-orange-600">Kiloutou</div>
+                    <div class="text-lg font-bold text-red-600">Simplon Burkina</div>
                 </div>
                 <div class="bg-white p-4 rounded-lg shadow-md text-center">
-                    <div class="text-lg font-bold text-red-600">Alfa Romeo</div>
+                    <div class="text-lg font-bold text-blue-600">Laborex Burkina</div>
                 </div>
                 <div class="bg-white p-4 rounded-lg shadow-md text-center">
-                    <div class="text-lg font-bold text-blue-600">Fraikin</div>
+                    <div class="text-lg font-bold text-black">Université Virtuelle du Burkina Faso</div>
                 </div>
                 <div class="bg-white p-4 rounded-lg shadow-md text-center">
-                    <div class="text-lg font-bold text-green-600">La Poste</div>
+                    <div class="text-lg font-bold text-green-600">Simplon Burkina</div>
                 </div>
                 <div class="bg-white p-4 rounded-lg shadow-md text-center">
-                    <div class="text-lg font-bold text-gray-600">Porsche</div>
+                    <div class="text-lg font-bold text-blue-600">Laborex Burkina</div>
                 </div>
                 <div class="bg-white p-4 rounded-lg shadow-md text-center">
-                    <div class="text-lg font-bold text-blue-600">STEF-TFE</div>
+                    <div class="text-lg font-bold text-gray-600">Université Virtuelle du Burkina Faso</div>
                 </div>
                 <div class="bg-white p-4 rounded-lg shadow-md text-center">
-                    <div class="text-lg font-bold text-red-600">LUKAUTOLU</div>
+                    <div class="text-lg font-bold text-blue-600">Simplon Burkina</div>
                 </div>
                 <div class="bg-white p-4 rounded-lg shadow-md text-center">
-                    <div class="text-lg font-bold text-blue-600">France 3</div>
+                    <div class="text-lg font-bold text-orange-600">Laborex Burkina</div>
                 </div>
                 <div class="bg-white p-4 rounded-lg shadow-md text-center">
-                    <div class="text-lg font-bold text-black">Adidas</div>
+                    <div class="text-lg font-bold text-green-600">Université Virtuelle du Burkina Faso</div>
                 </div>
                 <div class="bg-white p-4 rounded-lg shadow-md text-center">
-                    <div class="text-lg font-bold text-green-600">Champion</div>
+                    <div class="text-lg font-bold text-blue-600">Simplon Burkina</div>
                 </div>
                 <div class="bg-white p-4 rounded-lg shadow-md text-center">
-                    <div class="text-lg font-bold text-blue-600">DAF</div>
+                    <div class="text-lg font-bold text-red-600">Laborex Burkina</div>
                 </div>
                 <div class="bg-white p-4 rounded-lg shadow-md text-center">
-                    <div class="text-lg font-bold text-gray-600">Lafarge</div>
+                    <div class="text-lg font-bold text-gray-600">Université Virtuelle du Burkina</div>
                 </div>
                 <div class="bg-white p-4 rounded-lg shadow-md text-center">
-                    <div class="text-lg font-bold text-blue-600">EDF</div>
-                </div>
-                <div class="bg-white p-4 rounded-lg shadow-md text-center">
-                    <div class="text-lg font-bold text-orange-600">SNCF</div>
-                </div>
-                <div class="bg-white p-4 rounded-lg shadow-md text-center">
-                    <div class="text-lg font-bold text-green-600">GDF SUEZ</div>
-                </div>
-                <div class="bg-white p-4 rounded-lg shadow-md text-center">
-                    <div class="text-lg font-bold text-blue-600">Norske Skog</div>
-                </div>
-                <div class="bg-white p-4 rounded-lg shadow-md text-center">
-                    <div class="text-lg font-bold text-red-600">Norauto</div>
-                </div>
-                <div class="bg-white p-4 rounded-lg shadow-md text-center">
-                    <div class="text-lg font-bold text-gray-600">Mercedes-Benz</div>
-                </div>
-                <div class="bg-white p-4 rounded-lg shadow-md text-center">
-                    <div class="text-lg font-bold text-yellow-600">Lamborghini</div>
+                    <div class="text-lg font-bold text-yellow-600">Simplon Burkina</div>
                 </div>
             </div>
         </div>
@@ -263,7 +245,7 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div>
-                    <div class="text-2xl font-bold mb-4">Stage_app</div>
+                    <div class="text-2xl font-bold mb-4">EducLink</div>
                 </div>
                 
                 <div>
@@ -281,12 +263,12 @@
                 <div>
                     <h4 class="font-semibold mb-4">Entreprises</h4>
                     <ul class="space-y-2 text-sm">
-                        <li><a href="#" class="hover:text-gray-300">Stage_app pour les entreprises</a></li>
+                        <li><a href="#" class="hover:text-gray-300">EducLink entreprises</a></li>
                     </ul>
                 </div>
                 
                 <div>
-                    <h4 class="font-semibold mb-4">Stage_app</h4>
+                    <h4 class="font-semibold mb-4">EducLink
                     <ul class="space-y-2 text-sm">
                         <li><a href="#" class="hover:text-gray-300">Qui Sommes-nous?</a></li>
                         <li><a href="#" class="hover:text-gray-300">Rejoignez-nous</a></li>
@@ -304,7 +286,7 @@
                         <a href="#" class="hover:text-gray-300">Contact</a>
                     </div>
                     <div class="text-sm text-gray-400 mt-4 md:mt-0">
-                        Copyright© 2025 Stage_app. Tous droits réservés.
+                        Copyright© 2025 EducLink. Tous droits réservés.
                     </div>
                 </div>
             </div>

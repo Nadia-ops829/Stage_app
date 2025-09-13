@@ -1,6 +1,6 @@
-@extends('layouts.admin')
+modifi mon dashboard: @extends('layouts.admin')
 
-@section('title', 'Dashboard Super Administrateur')
+@section('title', 'Tableau de bord Super Administrateur')
 
 @section('content')
 <div class="container-fluid py-4">
@@ -10,20 +10,17 @@
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <h1 class="h3 mb-2">
-                        <i class="fas fa-crown me-2"></i>
-                        Dashboard Super Administrateur
+                        <i class=></i>
+                        Mon Tableau de bord
                     </h1>
-                    <p class="text-muted mb-0">Contrôle total de la plateforme de gestion de stages</p>
+                    <p class="text-muted mb-0"> Vue global de la plateforme</p>
                 </div>
                 <div class="d-flex gap-2">
                     {{-- <a href="{{ route('superadmin.admins.index') }}" class="btn btn-outline-primary">
                         <i class="fas fa-users-cog me-1"></i>
                         Gérer les admins
                     </a> --}}
-                    <a href="#" class="btn btn-outline-success">
-                        <i class="fas fa-chart-line me-1"></i>
-                        Statistiques globales
-                    </a>
+                    
                 </div>
             </div>
         </div>
@@ -122,7 +119,7 @@
 
     <!-- Main Content Row -->
     <div class="row">
-        <!-- System Overview -->
+        <!-- System Overview
         <div class="col-lg-8 mb-4">
             <div class="card border-0 shadow-sm">
                 <div class="card-header bg-white">
@@ -206,7 +203,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> -->
 
         <!-- Quick Actions & Profile -->
         <div class="col-lg-4 mb-4">
@@ -248,17 +245,18 @@
                             <i class="fas fa-users-cog me-2"></i>
                             Gérer les administrateurs
                         </a>
-                        <a href="#" class="btn btn-outline-success">
+                        <a href="{{ route('admin.entreprises.index') }}" class="btn btn-outline-success">
                             <i class="fas fa-chart-line me-2"></i>
-                            Statistiques globales
+                            Gérer les entreprises
                         </a>
-                        <a href="#" class="btn btn-outline-info">
+                        <a href="{{ route('superadmin.admins.etudiants') }}" class="btn btn-outline-info">
                             <i class="fas fa-cog me-2"></i>
-                            Configuration système
+                            Gérer les étudiants
                         </a>
-                        <a href="#" class="btn btn-outline-warning">
-                            <i class="fas fa-database me-2"></i>
-                            Sauvegarde
+                        <a href="{{ route('superadmin.stages.index') }}" class="btn btn-outline-info">
+                            <i class="fas fa-handshake me-2"></i>
+                             Statistiques des Stages
+                        </a>
                         </a>
                     </div>
                 </div>
@@ -297,7 +295,7 @@
                                         <i class="fas fa-chart-line text-white"></i>
                                     </div>
                                     <h6 class="card-title">Statistiques</h6>
-                                    <p class="card-text small text-muted">Analyses détaillées</p>
+                                    <p class="card-text small text-muted">Statistiques des stages</p>
                                     <a href="#" class="btn btn-sm btn-outline-primary">Voir</a>
                                 </div>
                             </div>
@@ -310,7 +308,7 @@
                                     </div>
                                     <h6 class="card-title">Configuration</h6>
                                     <p class="card-text small text-muted">Paramètres système</p>
-                                    <a href="#" class="btn btn-sm btn-outline-primary">Configurer</a>
+                                    <a href="{{ route('profile.edit') }}" class="btn btn-sm btn-outline-primary">Configurer</a>
                                 </div>
                             </div>
                         </div>
@@ -320,9 +318,11 @@
                                     <div class="bg-gradient-warning rounded-circle d-flex align-items-center justify-content-center mx-auto mb-3" style="width: 60px; height: 60px;">
                                         <i class="fas fa-shield-alt text-white"></i>
                                     </div>
-                                    <h6 class="card-title">Sécurité</h6>
-                                    <p class="card-text small text-muted">Contrôles de sécurité</p>
-                                    <a href="#" class="btn btn-sm btn-outline-primary">Sécuriser</a>
+                                    <h6 class="card-title">Entreprises</h6>
+                                    <p class="card-text small text-muted">Gérer les comptes entreprise</p>
+                                    <a href="{{ route('admin.entreprises.index') }}"  class="btn btn-sm btn-outline-primary">
+                                         Gérer 
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -332,77 +332,7 @@
         </div>
     </div>
 
-    <!-- Recent Activity -->
-    <div class="row">
-        <div class="col-12">
-            <div class="card border-0 shadow-sm">
-                <div class="card-header bg-white">
-                    <h5 class="mb-0">
-                        <i class="fas fa-history me-2"></i>
-                        Activité récente du système
-                    </h5>
-                </div>
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead class="table-light">
-                                <tr>
-                                    <th class="border-0">Action</th>
-                                    <th class="border-0">Utilisateur</th>
-                                    <th class="border-0">Détails</th>
-                                    <th class="border-0">Date</th>
-                                    <th class="border-0">Statut</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <i class="fas fa-user-plus text-success me-2"></i>
-                                        Nouvel administrateur créé
-                                    </td>
-                                    <td>admin@example.com</td>
-                                    <td>Compte admin ajouté</td>
-                                    <td>15/01/2025 14:30</td>
-                                    <td><span class="badge bg-success">Succès</span></td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <i class="fas fa-database text-info me-2"></i>
-                                        Sauvegarde automatique
-                                    </td>
-                                    <td>Système</td>
-                                    <td>Base de données sauvegardée</td>
-                                    <td>15/01/2025 02:00</td>
-                                    <td><span class="badge bg-success">Succès</span></td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <i class="fas fa-exclamation-triangle text-warning me-2"></i>
-                                        Tentative de connexion échouée
-                                    </td>
-                                    <td>unknown@example.com</td>
-                                    <td>IP: 192.168.1.100</td>
-                                    <td>15/01/2025 13:45</td>
-                                    <td><span class="badge bg-danger">Échec</span></td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <i class="fas fa-chart-line text-primary me-2"></i>
-                                        Rapport généré
-                                    </td>
-                                    <td>superadmin@example.com</td>
-                                    <td>Rapport mensuel</td>
-                                    <td>15/01/2025 10:15</td>
-                                    <td><span class="badge bg-success">Succès</span></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+    
 
 <style>
 .bg-gradient-primary {
