@@ -27,6 +27,11 @@
                         <i class="fas fa-users me-1"></i>
                         Gérer les candidatures
                     </a>
+                    <div class="d-flex gap-2">
+                    <a href="{{ route('stages.create') }}" class="btn btn-outline-primary">
+                            <i class="fas fa-plus me-2"></i>
+                            Voir les rapports
+                        </a>
                 </div>
             </div>
         </div>

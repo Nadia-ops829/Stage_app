@@ -153,6 +153,7 @@
         <a href="{{ route('candidatures.index') }}" class="{{ request()->routeIs('candidatures.index') ? 'active' : '' }}">
             <i class="fas fa-file-alt me-2"></i> Candidatures
         </a>
+        
         <a href="{{ route('admin.statistiques') }}" class="{{ request()->routeIs('admin.statistiques') ? 'active' : '' }}">
             <i class="fas fa-chart-bar me-2"></i> Statistiques
         </a>
@@ -169,6 +170,9 @@
         </a>
         <a href="{{ route('candidatures.recues') }}" class="{{ request()->routeIs('candidatures.recues') ? 'active' : '' }}">
             <i class="fas fa-users me-2"></i> Candidatures
+        </a>
+        <a href="{{ route('rapports.index') }}" class="{{ request()->routeIs('candidatures.index') ? 'active' : '' }}">
+            <i class="fas fa-file-alt me-2"></i> Validation des rapports    
         </a>
 
     @else
