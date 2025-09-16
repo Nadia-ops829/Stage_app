@@ -7,20 +7,22 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class RapportetudiantNotifications extends Notification
+class RapportetudiantNotifications extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    protected $titre;
+    protected $message;
     protected $lien;
+    protected $type; // 'nouveau', 'validation', 'refus', etc.
 
     /**
      * Créer une nouvelle instance de notification.
      */
-    public function __construct($titre, $lien)
+    public function __construct($message, $lien = null, $type = 'info')
     {
-        $this->titre = $titre;
+        $this->message = $message;
         $this->lien = $lien;
+        $this->type = $type;
     }
 
     /**
@@ -28,40 +30,79 @@ class RapportetudiantNotifications extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['mail', 'database']; // mailtrap + stockage DB
+        return ['mail', 'database'];
     }
 
     /**
-     * Contenu de l’email.
+     * Obtenir la représentation par e-mail de la notification.
      */
     public function toMail(object $notifiable): MailMessage
     {
-        return (new MailMessage)
-            ->subject('Nouveau rapport étudiant soumis')
-            ->greeting('Bonjour !')
-            ->line("Un étudiant vient de soumettre un rapport : **{$this->titre}**")
-            ->action('Voir le rapport', $this->lien)
-            ->line('Merci d’utiliser notre application.');
+        $mailMessage = (new MailMessage);
+        
+        // Personnaliser le sujet en fonction du type de notification
+        switch ($this->type) {
+            case 'nouveau':
+                $mailMessage->subject('Nouveau rapport de stage déposé');
+                $mailMessage->greeting('Bonjour !');
+                $mailMessage->line($this->message);
+                if ($this->lien) {
+                    $mailMessage->action('Voir le rapport', $this->lien);
+                }
+                break;
+                
+            case 'validation':
+                $mailMessage->subject('Votre rapport a été validé');
+                $mailMessage->greeting('Bonjour !');
+                $mailMessage->line($this->message);
+                if ($this->lien) {
+                    $mailMessage->action('Voir le rapport', $this->lien);
+                }
+                break;
+                
+            case 'refus':
+                $mailMessage->subject('Votre rapport nécessite des modifications');
+                $mailMessage->greeting('Bonjour,');
+                $mailMessage->line($this->message);
+                if ($this->lien) {
+                    $mailMessage->action('Voir les détails', $this->lien);
+                }
+                $mailMessage->line('Veuillez apporter les modifications demandées et soumettre à nouveau votre rapport.');
+                break;
+                
+            default:
+                $mailMessage->subject('Notification concernant votre rapport de stage');
+                $mailMessage->line($this->message);
+                if ($this->lien) {
+                    $mailMessage->action('Voir les détails', $this->lien);
+                }
+        }
+        
+        $mailMessage->line('Cordialement,')
+                   ->salutation("L'équipe " . config('app.name'));
+        
+        return $mailMessage;
     }
 
     /**
-     * Contenu sauvegardé en base.
+     * Obtenir la représentation tableau de la notification.
      */
     public function toArray(object $notifiable): array
     {
         return [
-            'titre' => $this->titre,
-            'message' => "Un étudiant a soumis un rapport : {$this->titre}",
-            'url' => $this->lien,
+            'message' => $this->message,
+            'lien' => $this->lien,
+            'type' => $this->type,
         ];
     }
-
 
     public function toDatabase($notifiable)
     {
         return [
             'message' => $this->message,
-            'lien' => $this->lien ?? '#',
+            'lien' => $this->lien,
+            'type' => $this->type,
+            'time' => now()->toDateTimeString(),
         ];
     }
 }

@@ -7,9 +7,9 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <span>Mes Rapports de Stage</span>
-                    @if(auth()->user()->etudiant)
-                        <a href="{{ route('rapports.create') }}" class="btn btn-primary">
-                            <i class="fas fa-plus"></i> Nouveau Rapport
+                    @if(isset($stageAccepte) && $stageAccepte)
+                        <a href="{{ route('rapports.create', ['stage_id' => $stageAccepte->id]) }}" class="btn btn-primary">
+                            <i class="fas fa-upload"></i> Déposer mon rapport de stage
                         </a>
                     @endif
                 </div>
@@ -102,14 +102,16 @@
                                 @empty
                                     <tr>
                                         <td colspan="6" class="text-center">
-                                            Aucun rapport trouvé.
-                                           <tr> <a href="{{ route('rapports.create') }}" class="btn btn-outline-primary">
-                                                <i class="fas fa-plus me-2"></i>
-                                                    Créer votre  premier Rapport
-                                                </a>
-                                            </tr>
-                                            
-                                            
+                                            @if(auth()->user()->isEtudiant() && !isset($stageAccepte))
+                                                <p>Vous n'avez pas de stage accepté pour le moment.</p>
+                                            @else
+                                                <p>Aucun rapport trouvé.</p>
+                                                @if(auth()->user()->isEtudiant() && $stageAccepte)
+                                                    <a href="{{ route('rapports.create', ['stage_id' => $stageAccepte->id]) }}" class="btn btn-primary mt-2">
+                                                        <i class="fas fa-upload"></i> Déposer mon premier rapport
+                                                    </a>
+                                                @endif
+                                            @endif
                                         </td>
                                     </tr>
 

@@ -100,6 +100,20 @@ Route::middleware(['role:admin'])->prefix('admin')->name('admin.')->group(functi
     Route::get('rapports/{rapport}', [\App\Http\Controllers\RapportController::class, 'show'])->name('rapports.show');
     Route::post('rapports/{rapport}/valider', [\App\Http\Controllers\RapportController::class, 'valider'])->name('rapports.valider');
     Route::get('rapports/{rapport}/telecharger', [\App\Http\Controllers\RapportController::class, 'telecharger'])->name('rapports.telecharger');
+    
+    // Routes protégées pour les étudiants
+    Route::middleware(['role:etudiant'])->group(function () {
+        Route::get('/mes-rapports', [\App\Http\Controllers\RapportController::class, 'index'])->name('rapports.etudiant.index');
+        Route::get('/rapports/create', [\App\Http\Controllers\RapportController::class, 'create'])->name('rapports.create');
+        Route::post('/rapports', [\App\Http\Controllers\RapportController::class, 'store'])->name('rapports.store');
+    });
+    
+    // Routes protégées pour les entreprises
+    Route::middleware(['role:entreprise'])->group(function () {
+        Route::get('/rapports-entreprise', [\App\Http\Controllers\RapportController::class, 'index'])->name('rapports.entreprise.index');
+    });
+    Route::post('rapports/{rapport}/valider', [\App\Http\Controllers\RapportController::class, 'valider'])->name('rapports.valider');
+    Route::get('rapports/{rapport}/telecharger', [\App\Http\Controllers\RapportController::class, 'telecharger'])->name('rapports.telecharger');
 
     // Routes pour le profil
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

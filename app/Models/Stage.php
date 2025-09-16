@@ -43,6 +43,12 @@ class Stage extends Model
     {
         return $this->hasMany(Candidature::class, 'stage_id');
     }
+    
+    // Relation avec le rapport
+    public function rapport()
+    {
+        return $this->hasOne(Rapport::class, 'stage_id');
+    }
 
     // Scope pour les stages actifs
     public function scopeActifs($query)
