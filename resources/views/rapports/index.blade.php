@@ -71,7 +71,7 @@
                                                 </a>
                                                 
                                                 
-                                                    @if($rapport->statut != 'valide')
+                                                    <!-- @if($rapport->statut != 'valide')
                                                         <a href="{{ route('rapports.edit', $rapport->id) }}" 
                                                            class="btn btn-sm btn-warning"
                                                            title="Modifier">
@@ -88,7 +88,7 @@
                                                                 <i class="fas fa-trash"></i>
                                                             </button>
                                                         </form>
-                                                    @endif
+                                                    @endif -->
                                                 
                                                 
                                                 <a href="{{ route('rapports.telecharger', $rapport->id) }}" 

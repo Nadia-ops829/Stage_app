@@ -182,10 +182,6 @@ class RapportController extends Controller
     {
         $rapport = Rapport::findOrFail($id);
 
-        if (Auth::user()->etudiant->id !== $rapport->etudiant_id) {
-            abort(403);
-        }
-
         $request->validate([
             'stage_id' => 'required|exists:stages,id',
             'fichier' => 'nullable|file|mimes:pdf,doc,docx|max:10240',
