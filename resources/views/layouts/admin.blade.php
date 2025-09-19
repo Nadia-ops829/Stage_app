@@ -121,7 +121,7 @@
     <i class="fas fa-users-cog me-2"></i> Gestion des Admins
 </a>
 
-<a href="{{ route('admin.entreprises.create') }}" class="{{ request()->routeIs('admin.entreprises.*') ? 'active' : '' }}">
+<a href="{{ route('admin.entreprises.index') }}" class="{{ request()->routeIs('admin.entreprises.*') ? 'active' : '' }}">
     <i class="fas fa-building me-2"></i> Gestion des Entreprises
 </a>
 
