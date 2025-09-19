@@ -8,18 +8,21 @@ use Illuminate\Support\Facades\Auth;
 
 class RoleMiddleware
 {
-    public function handle(Request $request, Closure $next, $role)
+    public function handle(Request $request, Closure $next, ...$roles)
     {
         if (!Auth::check()) {
             return redirect()->route('login');
         }
 
-        // Gestion spéciale pour super_admin
-        if ($role === 'super_admin' && Auth::user()->role === 'super_admin') {
+        $user = Auth::user();
+        
+        // Si l'utilisateur est super_admin, il a accès à tout
+        if ($user->role === 'super_admin') {
             return $next($request);
         }
-
-        if (Auth::user()->role !== $role) {
+        
+        // Vérifier si l'utilisateur a l'un des rôles autorisés
+        if (!in_array($user->role, $roles)) {
             abort(403, 'Accès refusé – Rôle insuffisant.');
         }
 

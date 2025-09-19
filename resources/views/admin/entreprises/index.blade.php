@@ -18,6 +18,7 @@
                     </h1>
                     <p class="text-muted mb-0">Gérez toutes les entreprises partenaires de votre plateforme</p>
                 </div>
+                @if(auth()->check() && auth()->user()->role === 'admin')
                 <div class="mt-3 mt-md-0">
                     <div class="btn-group" role="group">
                         <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#createEntrepriseModal">
@@ -32,6 +33,7 @@
                         </a>
                     </div>
                 </div>
+                @endif
             </div>
         </div>
     </div>
@@ -224,6 +226,7 @@
                                         
                                     
                                     <td class="text-end">
+                                        @if(auth()->check() && auth()->user()->role === 'admin')
                                         <div class="btn-group" role="group">
                                             <a href="{{ route('admin.entreprises.edit', $entreprise->id) }}" 
                                                class="btn btn-sm btn-outline-primary">
@@ -239,6 +242,9 @@
                                                 </button>
                                             </form>
                                         </div>
+                                        @else
+                                            <span class="text-muted">-</span>
+                                        @endif
                                     </td>
                                 </tr>
                             @endforeach
@@ -253,11 +259,13 @@
                 </div>
                 <h5 class="text-muted">Aucune entreprise</h5>
                 <p class="text-muted">Commencez par ajouter votre première entreprise.</p>
+                @if(auth()->check() && auth()->user()->role === 'admin')
                 <a href="{{ route('admin.entreprises.create') }}" 
                    class="btn btn-primary">
                     <i class="fas fa-plus me-1"></i>
                     Ajouter une entreprise
                 </a>
+                @endif
             </div>
         @endif
     </div>
